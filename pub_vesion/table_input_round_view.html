@@ -6,280 +6,304 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <title>RWD 輸入顯示複製頁面</title>
+    <title>產生占卜解析資訊</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="w-full max-w-none sm:max-w-md mx-auto p-4 bg-white rounded-lg shadow-lg" style="resize: both; overflow: auto;">
-    <!-- <button id="formatBtn" class="w-full py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600 transition mb-2">轉換成指定格式</button> -->
-        <h1 class="text-xl font-bold mb-4 text-center">字串輸入與複製</h1>
-        <label class="block mb-2 font-medium text-gray-700" for="inputArea">輸入內容：</label>
-    <textarea id="inputArea" rows="4" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 resize mb-4" placeholder="請輸入字串..."></textarea>
-        <label class="block mb-2 font-medium text-gray-700" for="outputArea">顯示內容：</label>
-    <textarea id="outputArea" rows="4" class="w-full p-2 border rounded bg-gray-50 resize mb-4" readonly></textarea>
-        <button id="copyBtn" class="w-full py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600 transition">複製內容</button>
+    <div id="app">
+        <div class="w-full max-w-none sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" style="resize: both; overflow: auto;">
+            <h1 class="text-2xl font-bold mb-6 text-center">產生占卜解析資訊</h1>
+            
+            <label class="block mb-3 font-medium text-gray-700 text-lg" for="inputArea">輸入內容：</label>
+            <textarea 
+                id="inputArea" 
+                v-model="inputText"
+                rows="6" 
+                class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 resize mb-6 text-base" 
+                placeholder="請輸入字串...">
+            </textarea>
+            
+            <label class="block mb-3 font-medium text-gray-700 text-lg" for="outputArea">顯示內容：</label>
+            <textarea 
+                id="outputArea" 
+                :value="outputText"
+                rows="6" 
+                class="w-full p-3 border rounded bg-gray-50 resize mb-6 text-base" 
+                readonly>
+            </textarea>
+            
+            <button 
+                @click="copyToClipboard" 
+                class="w-full py-3 px-6 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-lg font-medium">
+                {{ copyButtonText }}
+            </button>
+        </div>
     </div>
+
     <script>
-        // 轉換成指定格式
-        function convertToCustomFormat(parsedRounds) {
-            // 只取 "front" 與 "區域"，不加序號與括號
-            return parsedRounds.map((r) => {
-                // 例: "1-AL: 天梁 (主星, 回合:一, 區域:巳)"
-                const match = r.match(/^(\w+)-(\w+): ([^ ]+) \([^,]+, 回合:[^,]+, 區域:([^\)]+)\)/);
-                if (match) {
-                    return `${match[3]}在${match[4]}`;
-                } else {
-                    // 未知格式
-                    return r;
-                }
-            }).join('\n');
-        }
-        // 直接複製 rounds 資料
-        const round_data = {
-            ver: "1.0",
-            rounds: [
-                {
-                    round: "一",
-                    card_back_background_image: "images/back3.jpg",
-                    card_face_background_image: "images/face10.jpg",
-                    totalCards: 14,
-                    drawCount: 2,
-                    texts: [
-                        { key: "AA", front: "紫微", back: "主星" },
-                        { key: "AB", front: "天機", back: "主星" },
-                        { key: "AC", front: "太陽", back: "主星" },
-                        { key: "AD", front: "武曲", back: "主星" },
-                        { key: "AE", front: "天同", back: "主星" },
-                        { key: "AF", front: "廉貞", back: "主星" },
-                        { key: "AG", front: "天府", back: "主星" },
-                        { key: "AH", front: "太陰", back: "主星" },
-                        { key: "AI", front: "貪狼", back: "主星" },
-                        { key: "AJ", front: "巨門", back: "主星" },
-                        { key: "AK", front: "天相", back: "主星" },
-                        { key: "AL", front: "天梁", back: "主星" },
-                        { key: "AM", front: "七殺", back: "主星" },
-                        { key: "AN", front: "破軍", back: "主星" }
-                    ]
-                },
-                {
-                    round: "二",
-                    card_back_background_image: "images/back2.jpg",
-                    card_face_background_image: "images/face16.jpg",
-                    totalCards: 14,
-                    drawCount: 2,
-                    texts: [
-                        { key: "BA", front: "文昌", back: "副星" },
-                        { key: "BB", front: "文曲", back: "副星" },
-                        { key: "BC", front: "左輔", back: "副星" },
-                        { key: "BD", front: "右弼", back: "副星" },
-                        { key: "BE", front: "天魁", back: "副星" },
-                        { key: "BF", front: "天鉞", back: "副星" },
-                        { key: "BG", front: "地空", back: "副星" },
-                        { key: "BH", front: "地劫", back: "副星" },
-                        { key: "BI", front: "火星", back: "副星" },
-                        { key: "BJ", front: "鈴星", back: "副星" },
-                        { key: "BK", front: "擎羊", back: "副星" },
-                        { key: "BL", front: "陀羅", back: "副星" },
-                        { key: "BM", front: "天馬", back: "副星" },
-                        { key: "BN", front: "祿存", back: "副星" }
-                    ]
-                },
-                {
-                    round: "三",
-                    card_back_background_image: "images/back1.jpg",
-                    card_face_background_image: "images/face17.jpg",
-                    totalCards: 32,
-                    drawCount: 3,
-                    texts: [
-                        { key: "CA", front: "天官", back: "乙級星" },
-                        { key: "CB", front: "天福", back: "乙級星" },
-                        { key: "CC", front: "天廚", back: "乙級星" },
-                        { key: "CD", front: "天刑", back: "乙級星" },
-                        { key: "CE", front: "天姚", back: "乙級星" },
-                        { key: "CF", front: "解神", back: "乙級星" },
-                        { key: "CG", front: "天巫", back: "乙級星" },
-                        { key: "CH", front: "天月", back: "乙級星" },
-                        { key: "CI", front: "陰煞", back: "乙級星" },
-                        { key: "CJ", front: "台輔", back: "乙級星" },
-                        { key: "CK", front: "封誥", back: "乙級星" },
-                        { key: "CL", front: "天空", back: "乙級星" },
-                        { key: "CM", front: "天哭", back: "乙級星" },
-                        { key: "CN", front: "天虛", back: "乙級星" },
-                        { key: "CO", front: "龍池", back: "乙級星" },
-                        { key: "CP", front: "鳳閣", back: "乙級星" },
-                        { key: "CQ", front: "紅鸞", back: "乙級星" },
-                        { key: "CR", front: "天喜", back: "乙級星" },
-                        { key: "CS", front: "孤辰", back: "乙級星" },
-                        { key: "CT", front: "寡宿", back: "乙級星" },
-                        { key: "CU", front: "蜚廉", back: "乙級星" },
-                        { key: "CV", front: "破碎", back: "乙級星" },
-                        { key: "CW", front: "華蓋", back: "乙級星" },
-                        { key: "CX", front: "咸池", back: "乙級星" },
-                        { key: "CY", front: "天德", back: "乙級星" },
-                        { key: "CZ", front: "月德", back: "乙級星" },
-                        { key: "DA", front: "天才", back: "乙級星" },
-                        { key: "DB", front: "天壽", back: "乙級星" },
-                        { key: "DC", front: "三台", back: "乙級星" },
-                        { key: "DD", front: "八座", back: "乙級星" },
-                        { key: "DE", front: "恩光", back: "乙級星" },
-                        { key: "DF", front: "天貴", back: "乙級星" }
-                    ]
-                },
-                {
-                    round: "四",
-                    card_back_background_image: "images/back4.jpg",
-                    card_face_background_image: "images/face9.jpg",
-                    totalCards: 12,
-                    drawCount: 1,
-                    texts: [
-                        { key: "EA", front: "長生", back: "宮位" },
-                        { key: "EB", front: "沐浴", back: "宮位" },
-                        { key: "EC", front: "冠帶", back: "宮位" },
-                        { key: "ED", front: "臨官", back: "宮位" },
-                        { key: "EE", front: "帝旺", back: "宮位" },
-                        { key: "EF", front: "衰", back: "宮位" },
-                        { key: "EG", front: "病", back: "宮位" },
-                        { key: "EH", front: "死", back: "宮位" },
-                        { key: "EI", front: "墓", back: "宮位" },
-                        { key: "EJ", front: "絕", back: "宮位" },
-                        { key: "EK", front: "胎", back: "宮位" },
-                        { key: "EL", front: "養", back: "宮位" }
-                    ]
-                }
-            ]
-        };
-        const inputArea = document.getElementById('inputArea');
-        const outputArea = document.getElementById('outputArea');
-        const copyBtn = document.getElementById('copyBtn');
+        const { createApp, ref, computed, watch } = Vue;
 
-        function decode(str) {
-            try {
-                return decodeURIComponent(str);
-            } catch {
-                return str;
-            }
-        }
+        createApp({
+            setup() {
+                // 響應式資料
+                const inputText = ref('');
+                const copyButtonText = ref('複製內容');
 
-        function parseResult(resultStr) {
-            // 例: 1.0;3-AL-12-AK-12-BH-5-BB-6-DB-11-DD-8-CH-center-EH
-            let [ver, ...rest] = resultStr.split(';');
-            let rounds = [];
-            // location 對應表
-            const locationMap = {
-                '1': '巳', '2': '午', '3': '未', '4': '申', '5': '辰', '6': '酉',
-                '7': '卯', '8': '戌', '9': '寅', '10': '丑', '11': '子', '12': '亥', 'center': '中間'
-            };
-            if (rest.length > 0) {
-                let arr = rest.join(';').split('-');
-                for (let i = 0; i < arr.length; i += 2) {
-                    let location = arr[i];
-                    let key = arr[i + 1] || '';
-                    // 根據 key 找 front/back
-                    let found = null;
-                    let roundName = '';
-                    for (const round of round_data.rounds) {
-                        const text = round.texts.find(t => t.key === key);
-                        if (text) {
-                            found = text;
-                            roundName = round.round;
-                            break;
+                // 直接複製 rounds 資料（保持原資料結構不變）
+                const round_data = {
+                    ver: "1.0",
+                    rounds: [
+                        {
+                            round: "一",
+                            card_back_background_image: "images/back3.jpg",
+                            card_face_background_image: "images/face10.jpg",
+                            totalCards: 14,
+                            drawCount: 2,
+                            texts: [
+                                { key: "AA", front: "紫微", back: "主星" },
+                                { key: "AB", front: "天機", back: "主星" },
+                                { key: "AC", front: "太陽", back: "主星" },
+                                { key: "AD", front: "武曲", back: "主星" },
+                                { key: "AE", front: "天同", back: "主星" },
+                                { key: "AF", front: "廉貞", back: "主星" },
+                                { key: "AG", front: "天府", back: "主星" },
+                                { key: "AH", front: "太陰", back: "主星" },
+                                { key: "AI", front: "貪狼", back: "主星" },
+                                { key: "AJ", front: "巨門", back: "主星" },
+                                { key: "AK", front: "天相", back: "主星" },
+                                { key: "AL", front: "天梁", back: "主星" },
+                                { key: "AM", front: "七殺", back: "主星" },
+                                { key: "AN", front: "破軍", back: "主星" }
+                            ]
+                        },
+                        {
+                            round: "二",
+                            card_back_background_image: "images/back2.jpg",
+                            card_face_background_image: "images/face16.jpg",
+                            totalCards: 14,
+                            drawCount: 2,
+                            texts: [
+                                { key: "BA", front: "文昌", back: "副星" },
+                                { key: "BB", front: "文曲", back: "副星" },
+                                { key: "BC", front: "左輔", back: "副星" },
+                                { key: "BD", front: "右弼", back: "副星" },
+                                { key: "BE", front: "天魁", back: "副星" },
+                                { key: "BF", front: "天鉞", back: "副星" },
+                                { key: "BG", front: "地空", back: "副星" },
+                                { key: "BH", front: "地劫", back: "副星" },
+                                { key: "BI", front: "火星", back: "副星" },
+                                { key: "BJ", front: "鈴星", back: "副星" },
+                                { key: "BK", front: "擎羊", back: "副星" },
+                                { key: "BL", front: "陀羅", back: "副星" },
+                                { key: "BM", front: "天馬", back: "副星" },
+                                { key: "BN", front: "祿存", back: "副星" }
+                            ]
+                        },
+                        {
+                            round: "三",
+                            card_back_background_image: "images/back1.jpg",
+                            card_face_background_image: "images/face17.jpg",
+                            totalCards: 32,
+                            drawCount: 3,
+                            texts: [
+                                { key: "CA", front: "天官", back: "乙級星" },
+                                { key: "CB", front: "天福", back: "乙級星" },
+                                { key: "CC", front: "天廚", back: "乙級星" },
+                                { key: "CD", front: "天刑", back: "乙級星" },
+                                { key: "CE", front: "天姚", back: "乙級星" },
+                                { key: "CF", front: "解神", back: "乙級星" },
+                                { key: "CG", front: "天巫", back: "乙級星" },
+                                { key: "CH", front: "天月", back: "乙級星" },
+                                { key: "CI", front: "陰煞", back: "乙級星" },
+                                { key: "CJ", front: "台輔", back: "乙級星" },
+                                { key: "CK", front: "封誥", back: "乙級星" },
+                                { key: "CL", front: "天空", back: "乙級星" },
+                                { key: "CM", front: "天哭", back: "乙級星" },
+                                { key: "CN", front: "天虛", back: "乙級星" },
+                                { key: "CO", front: "龍池", back: "乙級星" },
+                                { key: "CP", front: "鳳閣", back: "乙級星" },
+                                { key: "CQ", front: "紅鸞", back: "乙級星" },
+                                { key: "CR", front: "天喜", back: "乙級星" },
+                                { key: "CS", front: "孤辰", back: "乙級星" },
+                                { key: "CT", front: "寡宿", back: "乙級星" },
+                                { key: "CU", front: "蜚廉", back: "乙級星" },
+                                { key: "CV", front: "破碎", back: "乙級星" },
+                                { key: "CW", front: "華蓋", back: "乙級星" },
+                                { key: "CX", front: "咸池", back: "乙級星" },
+                                { key: "CY", front: "天德", back: "乙級星" },
+                                { key: "CZ", front: "月德", back: "乙級星" },
+                                { key: "DA", front: "天才", back: "乙級星" },
+                                { key: "DB", front: "天壽", back: "乙級星" },
+                                { key: "DC", front: "三台", back: "乙級星" },
+                                { key: "DD", front: "八座", back: "乙級星" },
+                                { key: "DE", front: "恩光", back: "乙級星" },
+                                { key: "DF", front: "天貴", back: "乙級星" }
+                            ]
+                        },
+                        {
+                            round: "四",
+                            card_back_background_image: "images/back4.jpg",
+                            card_face_background_image: "images/face9.jpg",
+                            totalCards: 12,
+                            drawCount: 1,
+                            texts: [
+                                { key: "EA", front: "長生", back: "宮位" },
+                                { key: "EB", front: "沐浴", back: "宮位" },
+                                { key: "EC", front: "冠帶", back: "宮位" },
+                                { key: "ED", front: "臨官", back: "宮位" },
+                                { key: "EE", front: "帝旺", back: "宮位" },
+                                { key: "EF", front: "衰", back: "宮位" },
+                                { key: "EG", front: "病", back: "宮位" },
+                                { key: "EH", front: "死", back: "宮位" },
+                                { key: "EI", front: "墓", back: "宮位" },
+                                { key: "EJ", front: "絕", back: "宮位" },
+                                { key: "EK", front: "胎", back: "宮位" },
+                                { key: "EL", front: "養", back: "宮位" }
+                            ]
+                        }
+                    ]
+                };
+
+                // 工具函數（保持原邏輯不變）
+                function decode(str) {
+                    try {
+                        return decodeURIComponent(str);
+                    } catch {
+                        return str;
+                    }
+                }
+
+                function parseResult(resultStr) {
+                    // 例: 1.0;3-AL-12-AK-12-BH-5-BB-6-DB-11-DD-8-CH-center-EH
+                    let [ver, ...rest] = resultStr.split(';');
+                    let rounds = [];
+                    // location 對應表
+                    const locationMap = {
+                        '1': '巳', '2': '午', '3': '未', '4': '申', '5': '辰', '6': '酉',
+                        '7': '卯', '8': '戌', '9': '寅', '10': '丑', '11': '子', '12': '亥', 'center': '中間'
+                    };
+                    if (rest.length > 0) {
+                        let arr = rest.join(';').split('-');
+                        for (let i = 0; i < arr.length; i += 2) {
+                            let location = arr[i];
+                            let key = arr[i + 1] || '';
+                            // 根據 key 找 front/back
+                            let found = null;
+                            let roundName = '';
+                            for (const round of round_data.rounds) {
+                                const text = round.texts.find(t => t.key === key);
+                                if (text) {
+                                    found = text;
+                                    roundName = round.round;
+                                    break;
+                                }
+                            }
+                            let locationName = locationMap[location] || location;
+                            if (found) {
+                                rounds.push(`${location}-${key}: ${found.front} (${found.back}, 回合:${roundName}, 區域:${locationName})`);
+                            } else {
+                                rounds.push(`${location}-${key}: 未知 (區域:${locationName})`);
+                            }
                         }
                     }
-                    let locationName = locationMap[location] || location;
-                    if (found) {
-                        rounds.push(`${location}-${key}: ${found.front} (${found.back}, 回合:${roundName}, 區域:${locationName})`);
-                    } else {
-                        rounds.push(`${location}-${key}: 未知 (區域:${locationName})`);
+                    return { ver, rounds };
+                }
+
+                function convertToCustomFormat(parsedRounds) {
+                    // 只取 "front" 與 "區域"，不加序號與括號
+                    return parsedRounds.map((r) => {
+                        // 例: "1-AL: 天梁 (主星, 回合:一, 區域:巳)"
+                        const match = r.match(/^(\w+)-(\w+): ([^ ]+) \([^,]+, 回合:[^,]+, 區域:([^\)]+)\)/);
+                        if (match) {
+                            return `${match[3]}在${match[4]}`;
+                        } else {
+                            // 未知格式
+                            return r;
+                        }
+                    }).join('\n');
+                }
+
+                function isBase64(str) {
+                    return /^[A-Za-z0-9+/=]+$/.test(str) && str.length % 4 === 0;
+                }
+
+                function buildOutput(obj) {
+                    let header = '';
+                    if (obj && obj.cus_info) {
+                        const content = (obj.cus_info.content ?? '').toString();
+                        header = `問題概述:\n${decode(content)}\n\n`;
                     }
-                }
-            }
-            return { ver, rounds };
-        }
-
-        function formatOutput(jsonStr) {
-            let output = '';
-            try {
-                const obj = JSON.parse(jsonStr);
-                if (obj.cus_info) {
-                    output += `姓名: ${decode(obj.cus_info.cus_name || '')}\n`;
-                    output += `性別: ${decode(obj.cus_info.gender || '')}\n`;
-                    output += `主題: ${decode(obj.cus_info.subject || '')}\n`;
-                    output += `問題: ${decode(obj.cus_info.content || '')}\n`;
-                    output += `占卜時間: ${decode(obj.cus_info.divination_time || '')}\n`;
-                }
-                if (obj.result) {
-                    const parsed = parseResult(obj.result);
-                    if (parsed.ver !== round_data.ver) {
-                        output += `版本不符，請確認資料！\n`;
-                    } else {
-                        output += `版本: ${parsed.ver}\n`;
-                        output += `rounds:\n`;
-                        parsed.rounds.forEach(r => {
-                            output += `  ${r}\n`;
-                        });
+                    if (obj && obj.result) {
+                        const result = parseResult(obj.result);
+                        const body = convertToCustomFormat(result.rounds);
+                        return header + body;
                     }
+                    return null;
                 }
-            } catch (e) {
-                output = '解析失敗，請輸入正確 JSON 格式';
-            }
-            return output.trim();
-        }
 
-        inputArea.addEventListener('input', function() {
-            const val = inputArea.value.trim();
-            // 判斷是否為 base64
-            function isBase64(str) {
-                return /^[A-Za-z0-9+/=]+$/.test(str) && str.length % 4 === 0;
-            }
-            let parsed = '';
-            // 直接執行指定格式轉換
-            function buildOutput(obj) {
-                let header = '';
-                if (obj && obj.cus_info) {
-                    const content = (obj.cus_info.content ?? '').toString();
-                    header = `問題概述:\n${decode(content)}\n\n`;
-                }
-                if (obj && obj.result) {
-                    const result = parseResult(obj.result);
-                    const body = convertToCustomFormat(result.rounds);
-                    return header + body;
-                }
-                return null;
-            }
-            if (val.startsWith('{')) {
-                try {
-                    const obj = JSON.parse(val);
-                    parsed = buildOutput(obj);
-                } catch {
-                    parsed = '解析失敗';
-                }
-            } else if (isBase64(val)) {
-                try {
-                    const decoded = atob(val);
-                    const obj = JSON.parse(decoded);
-                    parsed = buildOutput(obj);
-                } catch {
-                    parsed = 'base64 解碼失敗';
-                }
-            } else {
-                parsed = val;
-            }
-            outputArea.value = parsed || '';
-        });
+                // 計算屬性 - 輸出文字
+                const outputText = computed(() => {
+                    const val = inputText.value.trim();
+                    let parsed = '';
+                    
+                    if (val.startsWith('{')) {
+                        try {
+                            const obj = JSON.parse(val);
+                            parsed = buildOutput(obj);
+                        } catch {
+                            parsed = '解析失敗';
+                        }
+                    } else if (isBase64(val)) {
+                        try {
+                            const decoded = atob(val);
+                            const obj = JSON.parse(decoded);
+                            parsed = buildOutput(obj);
+                        } catch {
+                            parsed = 'base64 解碼失敗';
+                        }
+                    } else {
+                        parsed = val;
+                    }
+                    
+                    return parsed || '';
+                });
 
-        // 轉換格式按鈕
-    // ...existing code...
+                // 複製到剪貼簿功能
+                const copyToClipboard = async () => {
+                    try {
+                        if (navigator.clipboard && window.isSecureContext) {
+                            // 使用現代 Clipboard API
+                            await navigator.clipboard.writeText(outputText.value);
+                        } else {
+                            // 降級到傳統方法
+                            const textArea = document.getElementById('outputArea');
+                            textArea.select();
+                            textArea.setSelectionRange(0, textArea.value.length);
+                            document.execCommand('copy');
+                        }
+                        
+                        copyButtonText.value = '已複製!';
+                        setTimeout(() => {
+                            copyButtonText.value = '複製內容';
+                        }, 1200);
+                    } catch (err) {
+                        console.error('複製失敗:', err);
+                        copyButtonText.value = '複製失敗';
+                        setTimeout(() => {
+                            copyButtonText.value = '複製內容';
+                        }, 1200);
+                    }
+                };
 
-        // 複製按鈕
-        copyBtn.addEventListener('click', function() {
-            outputArea.select();
-            outputArea.setSelectionRange(0, outputArea.value.length);
-            document.execCommand('copy');
-            copyBtn.textContent = '已複製!';
-            setTimeout(() => {
-                copyBtn.textContent = '複製內容';
-            }, 1200);
-        });
+                return {
+                    inputText,
+                    outputText,
+                    copyButtonText,
+                    copyToClipboard
+                };
+            }
+        }).mount('#app');
     </script>
 </body>
 </html>
