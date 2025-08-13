@@ -229,17 +229,30 @@
                 }
 
                 function buildOutput(obj) {
-                    let header = '';
+                    let output = '';
+                    
                     if (obj && obj.cus_info) {
-                        const content = (obj.cus_info.content ?? '').toString();
-                        header = `問題概述:\n${decode(content)}\n\n`;
+                        // 顯示客戶資訊
+                        const gender = decode(obj.cus_info.gender ?? '');
+                        const cusName = decode(obj.cus_info.cus_name ?? '');
+                        const subject = decode(obj.cus_info.subject ?? '');
+                        const content = decode(obj.cus_info.content ?? '');
+                        const divinationTime = decode(obj.cus_info.divination_time ?? '');
+                        
+                        output += `類型：${subject}\n`;
+                        output += `性別：${gender}\n`;
+                        output += `姓名：${cusName}\n`;
+                        output += `題目：${subject}\n\n`;
+                        output += `問題概述:\n${content}\n\n`;
                     }
+                    
                     if (obj && obj.result) {
                         const result = parseResult(obj.result);
                         const body = convertToCustomFormat(result.rounds);
-                        return header + body;
+                        output += `占卜結果:\n${body}`;
                     }
-                    return null;
+                    
+                    return output || null;
                 }
 
                 // 計算屬性 - 輸出文字
