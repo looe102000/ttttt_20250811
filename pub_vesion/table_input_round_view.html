@@ -12,7 +12,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div id="app">
-        <div class="w-full max-w-none sm:max-w-lg md:max-w-2xl lg:max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg" style="resize: both; overflow: auto;">
+    <div class="w-full mx-auto p-6 bg-white rounded-lg shadow-lg" style="resize: both; overflow: auto;">
             <h1 class="text-2xl font-bold mb-6 text-center">產生占卜解析資訊</h1>
             
             <label class="block mb-3 font-medium text-gray-700 text-lg" for="inputArea">輸入內容：</label>
@@ -239,6 +239,7 @@
                         const content = decode(obj.cus_info.content ?? '');
                         const divinationTime = decode(obj.cus_info.divination_time ?? '');
                         
+                        output += `時間：${divinationTime}\n`;
                         output += `類型：${subject}\n`;
                         output += `性別：${gender}\n`;
                         output += `姓名：${cusName}\n`;
@@ -249,7 +250,7 @@
                     if (obj && obj.result) {
                         const result = parseResult(obj.result);
                         const body = convertToCustomFormat(result.rounds);
-                        output += `占卜結果:\n${body}`;
+                        output += `抽牌呈現:\n\n${body}`;
                     }
                     
                     return output || null;
