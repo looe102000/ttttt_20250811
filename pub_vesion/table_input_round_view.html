@@ -141,12 +141,12 @@
                 }
 
                 function convertToCustomFormat(parsedRounds) {
-                    return parsedRounds.map((r) => {
+                    return parsedRounds.map((r, idx) => {
                         const match = r.match(/^(\w+)-(\w+): ([^ ]+) \([^,]+, 回合:[^,]+, 區域:([^\)]+)\)/);
                         if (match) {
-                            return `${match[3]}在${match[4]}`;
+                            return `${idx + 1}. ${match[3]}在${match[4]}`;
                         } else {
-                            return r;
+                            return `${idx + 1}. ${r}`;
                         }
                     }).join('\n');
                 }
