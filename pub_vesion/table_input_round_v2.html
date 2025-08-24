@@ -48,12 +48,14 @@
 
     <div id="app" v-cloak class="container mx-auto p-4 max-w-4xl">
 
-        <!-- Page A: Welcome/Rules -->
-        <div id="A_Page" class="page" :class="{ 'visible': currentPage === 'A_Page' }">
-            <div class="text-center mb-8">
-                <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">歡迎來到抽牌系統</h1>
-                <p class="text-sky-300">一個引導您探索內心的工具</p>
-            </div>
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-white mb-4">歡迎來到抽牌系統</h1>
+            <p class="text-sky-300">一個引導您探索內心的工具</p>
+        </div>
+
+        <!-- Page A0: Welcome/Rules -->
+        <div id="A0_Page" class="page" :class="{ 'visible': currentPage === 'A0_Page' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg">
                 <h2 class="text-2xl font-bold text-sky-400 border-b-2 border-sky-700 pb-2 mb-4">規則說明</h2>
                 <ol class="list-decimal list-inside space-y-3 text-gray-300">
@@ -73,19 +75,14 @@
                 </ul>
             </div>
             <div class="text-center mt-8">
-                <button @click="navigateToPage('B_Page')" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+                <button @click="goToNextPage()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
                     下一頁 <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Page B: Drawing Instructions -->
-        <div id="B_Page" class="page" :class="{ 'visible': currentPage === 'B_Page' }">
-            <div class="flex justify-start mb-6">
-                <button @click="navigateToPage('A_Page')" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
-                </button>
-            </div>
+        <!-- Page A1: Drawing Instructions -->
+        <div id="A1_Page" class="page" :class="{ 'visible': currentPage === 'A1_Page' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg">
                 <h2 class="text-2xl font-bold text-amber-400 border-b-2 border-amber-700 pb-2 mb-4">抽牌說明</h2>
                 <ol class="list-decimal list-inside space-y-3 text-gray-300">
@@ -97,18 +94,53 @@
                     <li>最後1輪，數字1-12擇1即可。</li>
                 </ol>
             </div>
-            <div class="text-center mt-8">
-                <button @click="navigateToPage('C_Page')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+            <div class="flex justify-center gap-8 mt-8">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
+                </button>
+                <button @click="goToNextPage()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full">
+                    下一頁 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page A2: Placeholder -->
+        <div id="A2_Page" class="page" :class="{ 'visible': currentPage === 'A2_Page' }">
+            <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg text-center">
+                <h2 class="text-2xl font-bold text-teal-400 mb-4">A2 Page</h2>
+                <p class="text-gray-300">這裡是 A2 頁面內容。</p>
+            </div>
+            <div class="flex justify-center gap-8 mt-8">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
+                </button>
+                <button @click="goToNextPage()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full">
+                    下一頁 <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Page A3: Placeholder -->
+        <div id="A3_Page" class="page" :class="{ 'visible': currentPage === 'A3_Page' }">
+            <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg text-center">
+                <h2 class="text-2xl font-bold text-teal-400 mb-4">A3 Page</h2>
+                <p class="text-gray-300">這裡是 A3 頁面內容。</p>
+            </div>
+            <div class="flex justify-center gap-8 mt-8">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
+                </button>
+                <button @click="goToNextPage()" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded-full">
                     我明白了，開始提問 <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Page C: User Input -->
-        <div id="C_Page" class="page" :class="{ 'visible': currentPage === 'C_Page' }">
+        <!-- Page A4: User Input -->
+        <div id="A4_Page" class="page" :class="{ 'visible': currentPage === 'A4_Page' }">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <div class="flex gap-2 flex-wrap">
-                    <button @click="navigateToPage('B_Page')" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-full text-sm transition">
+                    <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-full text-sm transition">
                         <i class="fas fa-arrow-left mr-1"></i> 上一頁
                     </button>
                     <button @click="showDirectionsModal = true" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-full text-sm transition">規則說明</button>
@@ -143,35 +175,35 @@
                 <div class="flex gap-4 mt-4">
                     <button v-if="!isSubmitted" @click="submitQuestion" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full transition">確認問題</button>
                     <button v-if="isSubmitted && !hasStartedDrawing" @click="editQuestion" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full transition">編輯問題</button>
-                    <button v-if="hasSelectedBox || allRoundsCompleted" @click="navigateToPage('E_Page')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-full transition">返回抽牌頁</button>
+                    <button v-if="hasSelectedBox || allRoundsCompleted" @click="navigateToPage('A6_Page')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-full transition">返回抽牌頁</button>
                 </div>
             </div>
         </div>
 
-        <!-- Page D: Meditation -->
-        <div id="D_Page" class="page" :class="{ 'visible': currentPage === 'D_Page' }">
-             <div class="flex justify-start mb-6">
-                <button @click="navigateToPage('C_Page')" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 返回問題頁
-                </button>
-            </div>
-            <div class="text-center">
+        <!-- Page A5: Meditation -->
+        <div id="A5_Page" class="page" :class="{ 'visible': currentPage === 'A5_Page' }">
+             <div class="text-center">
                 <div class="h-[60vh] bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-6" style="background-image: url('images/img_meditation.jpg');">
                     <div class="bg-black/60 p-8 rounded-xl">
                         <h3 class="text-3xl font-bold text-white mb-4">請專心冥想您的問題</h3>
                         <p class="text-gray-300">深呼吸，放鬆心情，專注於您想要詢問的事物。</p>
                     </div>
                 </div>
-                <button @click="navigateToPage('E_Page')" class="mt-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+            </div>
+            <div class="flex justify-center gap-8 mt-8">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
+                </button>
+                <button @click="goToNextPage()" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
                     <i class="fas fa-magic mr-2"></i> 開始抽牌
                 </button>
             </div>
         </div>
 
-        <!-- Page E: Card Drawing -->
-        <div id="E_Page" class="page" :class="{ 'visible': currentPage === 'E_Page' }">
+        <!-- Page A6: Card Drawing -->
+        <div id="A6_Page" class="page" :class="{ 'visible': currentPage === 'A6_Page' }">
             <div class="flex flex-wrap items-center mb-6 gap-4">
-                <button @click="navigateToPage('C_Page')" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
                     <i class="fas fa-arrow-left mr-2"></i> 返回問題頁
                 </button>
                 <!-- 隨機選取按鈕 - 正常狀態 -->
@@ -418,10 +450,34 @@
         createApp({
             setup() {
                 // Page management
-                const currentPage = ref('A_Page');
+                const currentPage = ref('A0_Page');
                 const navigateToPage = (pageId) => {
                     window.scrollTo(0, 0);
                     currentPage.value = pageId;
+                };
+
+                const navigationMap = {
+                    'A0_Page': { next: 'A1_Page', prev: null },
+                    'A1_Page': { next: 'A2_Page', prev: 'A0_Page' },
+                    'A2_Page': { next: 'A3_Page', prev: 'A1_Page' },
+                    'A3_Page': { next: 'A4_Page', prev: 'A2_Page' },
+                    'A4_Page': { next: 'A5_Page', prev: 'A3_Page' },
+                    'A5_Page': { next: 'A6_Page', prev: 'A4_Page' },
+                    'A6_Page': { next: null,      prev: 'A4_Page' }
+                };
+
+                const goToNextPage = () => {
+                    const nextPage = navigationMap[currentPage.value]?.next;
+                    if (nextPage) {
+                        navigateToPage(nextPage);
+                    }
+                };
+
+                const goToPrevPage = () => {
+                    const prevPage = navigationMap[currentPage.value]?.prev;
+                    if (prevPage) {
+                        navigateToPage(prevPage);
+                    }
                 };
 
                 // User input
@@ -434,7 +490,7 @@
                 const submitQuestion = () => {
                     if (gender.value && cus_name.value && subject.value && questionContent.value) {
                         isSubmitted.value = true;
-                        navigateToPage('D_Page');
+                        navigateToPage('A5_Page');
                     } else {
                         alert('請填寫所有問題相關資訊！');
                     }
@@ -952,7 +1008,7 @@
                 });
 
                 return {
-                    currentPage, navigateToPage,
+                    currentPage, navigateToPage, goToNextPage, goToPrevPage,
                     gender, cus_name, subject, questionContent, isSubmitted, submitQuestion, editQuestion,
                     currentTime,
                     rows, getLocationText,
