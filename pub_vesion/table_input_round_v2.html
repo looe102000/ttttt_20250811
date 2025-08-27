@@ -147,9 +147,15 @@
                     <button @click="showCardsModal = true" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-full text-sm transition">抽牌說明</button>
                     <button @click="showLinksModal = true" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-full text-sm transition">連結資訊</button>
                 </div>
-                <!--title="快速點擊三下切換隨機功能"-->
+                <!--title="按壓三秒後啟動隨機功能"-->
                 <div class="bg-slate-900/80 text-sm text-cyan-300 font-mono py-2 px-4 rounded-full border border-slate-700 cursor-pointer select-none"
-                    @click="handleTripleClick"
+                    @mousedown="startLongPress"
+                    @mouseup="endLongPress"
+                    @mouseleave="endLongPress"
+                    @touchstart="startLongPress"
+                    @touchend="endLongPress"
+                    @touchcancel="endLongPress"
+                    :class="{ 'bg-cyan-600/80 scale-95 ring-2 ring-cyan-400': isLongPressing }"
                     >
                     {{ currentTime }}
                 </div>
@@ -707,26 +713,14 @@
                 const showRandomButton = ref(false); // 控制隨機按鈕顯示
                 const hasManualSelection = ref(false); // 追蹤是否有手動選擇
                 
-                // 快速點擊功能 (三下點擊)
-                const clickCount = ref(0);
-                const clickTimer = ref(null);
-                const clickTimeout = 1000; // 1秒內完成三下點擊
+                // 長按功能 (按壓三秒)
+                const isLongPressing = ref(false);
+                const longPressTimer = ref(null);
+                const longPressDuration = 3000; // 3秒
                 
-                const handleTripleClick = () => {
-                    clickCount.value++;
-                    
-                    // 如果是第一次點擊，設置計時器
-                    if (clickCount.value === 1) {
-                        clickTimer.value = setTimeout(() => {
-                            clickCount.value = 0; // 重置計數
-                        }, clickTimeout);
-                    }
-                    
-                    // 如果達到三次點擊
-                    if (clickCount.value === 3) {
-                        clearTimeout(clickTimer.value);
-                        clickCount.value = 0;
-                        
+                const startLongPress = () => {
+                    isLongPressing.value = true;
+                    longPressTimer.value = setTimeout(() => {
                         // 切換隨機按鈕顯示狀態
                         showRandomButton.value = !showRandomButton.value;
                         
@@ -736,7 +730,17 @@
                         } else {
                             alert('隨機選取功能已關閉');
                         }
+                        
+                        isLongPressing.value = false;
+                    }, longPressDuration);
+                };
+                
+                const endLongPress = () => {
+                    if (longPressTimer.value) {
+                        clearTimeout(longPressTimer.value);
+                        longPressTimer.value = null;
                     }
+                    isLongPressing.value = false;
                 };
 
                 const closeAllModals = () => {
@@ -1016,7 +1020,7 @@
                     allRoundsCompleted, hasSelectedBox, hasStartedDrawing,
                     results, formattedResults,
                     base64Output, copyToClipboard, randomSelect, isRandomSelecting, randomSelectCompleted,
-                    showRandomButton, handleTripleClick, hasManualSelection,
+                    showRandomButton, startLongPress, endLongPress, isLongPressing, hasManualSelection,
                     // Modals
                     showNumberSelector, showAreaSelector, showDirectionsModal, showCardsModal, showLinksModal, showResultModal,
                     closeAllModals,
