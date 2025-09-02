@@ -54,6 +54,41 @@
             <p class="text-sky-300">一個引導您探索內心的工具</p>
         </div>
 
+        <!-- Welcome Page -->
+        <div id="Index_Page" class="page" :class="{ 'visible': currentPage === 'Index_Page' }">
+            <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-8 shadow-lg text-center">
+                <div class="mb-8">
+                    <h1 class="text-4xl md:text-5xl font-bold text-sky-400 mb-4">
+                        <i class="fas fa-star text-yellow-400 mr-3"></i>
+                        歡迎來到張真人小教室
+                        <i class="fas fa-star text-yellow-400 ml-3"></i>
+                    </h1>
+                    <div class="w-24 h-1 bg-gradient-to-r from-sky-400 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+                
+                <div class="space-y-6 mb-8">
+                    <p class="text-lg text-gray-300 leading-relaxed">
+                        在這裡，您將體驗到神秘的塔羅占卜之旅
+                    </p>
+                    <p class="text-base text-gray-400">
+                        請用心準備您的問題，讓牌卡為您指引方向
+                    </p>
+                </div>
+
+                <div class="flex justify-center items-center space-x-4 mb-8">
+                    <i class="fas fa-moon text-purple-400 text-2xl"></i>
+                    <i class="fas fa-crystal-ball text-sky-400 text-3xl"></i>
+                    <i class="fas fa-sun text-yellow-400 text-2xl"></i>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <button @click="goToNextPage()" class="bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-700 hover:to-purple-700 text-white font-bold py-4 px-12 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+                    開始占卜之旅 <i class="fas fa-magic ml-2"></i>
+                </button>
+            </div>
+        </div>
+
         <!-- Page A0: Welcome/Rules -->
         <div id="A0_Page" class="page" :class="{ 'visible': currentPage === 'A0_Page' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg">
@@ -74,8 +109,11 @@
                     <li>我在七月有某個考試，想知道考運如何？</li>
                 </ul>
             </div>
-            <div class="text-center mt-8">
-                <button @click="goToNextPage()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+            <div class="flex justify-center gap-8 mt-8">
+                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-3 px-8 rounded-full">
+                    <i class="fas fa-arrow-left mr-2"></i> 上一頁
+                </button>
+                <button @click="goToNextPage()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 px-8 rounded-full">
                     下一頁 <i class="fas fa-arrow-right ml-2"></i>
                 </button>
             </div>
@@ -147,7 +185,7 @@
                     <button @click="showCardsModal = true" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-full text-sm transition">抽牌說明</button>
                     <button @click="showLinksModal = true" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-full text-sm transition">連結資訊</button>
                 </div>
-                <!--title="按壓三秒後啟動隨機功能"-->
+                <!--title="按壓兩秒後啟動隨機功能"-->
                 <div class="bg-slate-900/80 text-sm text-cyan-300 font-mono py-2 px-4 rounded-full border border-slate-700 cursor-pointer select-none"
                     @mousedown="startLongPress"
                     @mouseup="endLongPress"
@@ -181,18 +219,21 @@
                 <div class="flex gap-4 mt-4">
                     <button v-if="!isSubmitted" @click="submitQuestion" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full transition">確認問題</button>
                     <button v-if="isSubmitted && !hasStartedDrawing" @click="editQuestion" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full transition">編輯問題</button>
-                    <button v-if="hasSelectedBox || allRoundsCompleted" @click="navigateToPage('A6_Page')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-full transition">返回抽牌頁</button>
+                    <button v-if="hasSelectedBox || allRoundsCompleted" @click="navigateToPage('End_Page')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-full transition">返回抽牌頁</button>
                 </div>
             </div>
         </div>
 
         <!-- Page A5: Meditation -->
         <div id="A5_Page" class="page" :class="{ 'visible': currentPage === 'A5_Page' }">
-             <div class="text-center">
-                <div class="h-[60vh] bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-6" style="background-image: url('images/img_meditation.jpg');">
-                    <div class="bg-black/60 p-8 rounded-xl">
-                        <h3 class="text-3xl font-bold text-white mb-4">請專心冥想您的問題</h3>
-                        <p class="text-gray-300">深呼吸，放鬆心情，專注於您想要詢問的事物。</p>
+            <div class="text-center">
+                <div class="h-[60vh] sm:h-[55vh] md:h-[50vh] bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-4" style="background-image: url('images/img_meditation.jpg');">
+                    <div class="bg-black/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl w-full max-w-3xl text-left">
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-amber-100 mb-3 text-center drop-shadow-md">請專心冥想您的問題</h3>
+                        <p class="text-sm text-sky-200 text-center mb-2">{{ subject || '未設定' }}</p>
+                        <div class="max-h-[28vh] overflow-auto text-amber-200 font-medium whitespace-pre-line break-words text-base md:text-lg p-3 bg-black/30 rounded">
+                            {{ questionContent || '（尚未輸入問題）' }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -207,11 +248,8 @@
         </div>
 
         <!-- Page A6: Card Drawing -->
-        <div id="A6_Page" class="page" :class="{ 'visible': currentPage === 'A6_Page' }">
+        <div id="End_Page" class="page" :class="{ 'visible': currentPage === 'End_Page' }">
             <div class="flex flex-wrap items-center mb-6 gap-4">
-                <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300">
-                    <i class="fas fa-arrow-left mr-2"></i> 返回問題頁
-                </button>
                 <!-- 隨機選取按鈕 - 正常狀態 -->
                 <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
                     class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
@@ -240,6 +278,31 @@
                         <li>每次只能編輯目前回合，上一回合需填完才能進行下一步。</li>
                         <li>完成所有回合後，系統會產生專屬序號，可複製保存。</li>
                     </ul>
+                </div>
+                <!-- 提問顯示區塊-->
+                <div v-if="questionContent" class="mt-6 w-full flex-1 min-w-0">
+                    <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-4 shadow-lg w-full">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center text-cyan-300">
+                                <i class="fas fa-comment-dots mr-3 text-lg"></i>
+                                <div>
+                                    <div class="font-bold text-sky-300">本次提問</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">
+                                        來自: <span class="font-medium text-gray-200">{{ cus_name || '訪客' }}</span>
+                                        <span class="mx-2">·</span>
+                                        主題: <span class="font-medium text-gray-200">{{ subject || '未設定' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-400 self-start">
+                                <span class="font-mono text-amber-300 text-[11px]">{{ currentTime }}</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-900/50 rounded-md p-3 text-gray-200 whitespace-pre-line leading-relaxed break-words text-base md:text-lg">
+                            {{ questionContent }}
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -456,20 +519,21 @@
         createApp({
             setup() {
                 // Page management
-                const currentPage = ref('A0_Page');
+                const currentPage = ref('Index_Page');
                 const navigateToPage = (pageId) => {
                     window.scrollTo(0, 0);
                     currentPage.value = pageId;
                 };
 
                 const navigationMap = {
-                    'A0_Page': { next: 'A1_Page', prev: null },
+                    'Index_Page': { next: 'A0_Page', prev: null },
+                    'A0_Page': { next: 'A1_Page', prev: 'Index_Page' },
                     'A1_Page': { next: 'A2_Page', prev: 'A0_Page' },
                     'A2_Page': { next: 'A3_Page', prev: 'A1_Page' },
                     'A3_Page': { next: 'A4_Page', prev: 'A2_Page' },
                     'A4_Page': { next: 'A5_Page', prev: 'A3_Page' },
-                    'A5_Page': { next: 'A6_Page', prev: 'A4_Page' },
-                    'A6_Page': { next: null,      prev: 'A4_Page' }
+                    'A5_Page': { next: 'End_Page', prev: 'A4_Page' },
+                    'End_Page': { next: null,      prev: null }
                 };
 
                 const goToNextPage = () => {
@@ -713,10 +777,10 @@
                 const showRandomButton = ref(false); // 控制隨機按鈕顯示
                 const hasManualSelection = ref(false); // 追蹤是否有手動選擇
                 
-                // 長按功能 (按壓三秒)
+                // 長按功能 (按壓兩秒)
                 const isLongPressing = ref(false);
                 const longPressTimer = ref(null);
-                const longPressDuration = 3000; // 3秒
+                const longPressDuration = 2000; // 2秒
                 
                 const startLongPress = () => {
                     isLongPressing.value = true;
