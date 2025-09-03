@@ -304,7 +304,7 @@
                                     </div>
                                     
                                     <!-- 隨機選取按鈕以本次提問為基準向右偏移（橫排浮動設計） -->
-                                    <div class="absolute -top-2 left-20 text-xs z-20">
+                                    <div class="absolute -top-0 left-20 text-xs z-20">
                                         <!-- 隨機選取按鈕 - 正常狀態 -->
                                         <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
                                             class="bg-purple-600/90 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105 text-xs backdrop-blur-sm border border-purple-500/50 whitespace-nowrap">
@@ -329,7 +329,7 @@
                                 </div>
                                 
                                 <!-- 時間位置在標題區域右上角（框框內但保持距離） -->
-                                <div class="absolute top-2 right-2 text-xs text-gray-400 z-30">
+                                <div class="absolute top-4 right-2 text-xs text-gray-400 z-30">
                                     <div class="font-mono text-amber-300 text-[11px] bg-slate-900/80 py-1 px-3 rounded-full border border-slate-700 cursor-pointer select-none shadow-lg"
                                         @mousedown="startLongPress"
                                         @mouseup="endLongPress"
