@@ -89,8 +89,8 @@
             </div>
         </div>
 
-        <!-- Page A0: Welcome/Rules -->
-        <div id="A0_Page" class="page" :class="{ 'visible': currentPage === 'A0_Page' }">
+        <!-- Page 0: Welcome/Rules -->
+        <div id="Page_0" class="page" :class="{ 'visible': currentPage === 'Page_0' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg">
                 <h2 class="text-2xl font-bold text-sky-400 border-b-2 border-sky-700 pb-2 mb-4">規則說明</h2>
                 <ol class="list-decimal list-inside space-y-3 text-gray-300">
@@ -119,8 +119,8 @@
             </div>
         </div>
 
-        <!-- Page A1: Drawing Instructions -->
-        <div id="A1_Page" class="page" :class="{ 'visible': currentPage === 'A1_Page' }">
+        <!-- Page 1: Drawing Instructions -->
+        <div id="Page_1" class="page" :class="{ 'visible': currentPage === 'Page_1' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg">
                 <h2 class="text-2xl font-bold text-amber-400 border-b-2 border-amber-700 pb-2 mb-4">抽牌說明</h2>
                 <ol class="list-decimal list-inside space-y-3 text-gray-300">
@@ -142,8 +142,8 @@
             </div>
         </div>
 
-        <!-- Page A2: Placeholder -->
-        <div id="A2_Page" class="page" :class="{ 'visible': currentPage === 'A2_Page' }">
+        <!-- Page 2: Placeholder -->
+        <div id="Page_2" class="page" :class="{ 'visible': currentPage === 'Page_2' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg text-center">
                 <h2 class="text-2xl font-bold text-teal-400 mb-4">A2 Page</h2>
                 <p class="text-gray-300">這裡是 A2 頁面內容。</p>
@@ -158,8 +158,8 @@
             </div>
         </div>
 
-        <!-- Page A3: Placeholder -->
-        <div id="A3_Page" class="page" :class="{ 'visible': currentPage === 'A3_Page' }">
+        <!-- Page 3: Placeholder -->
+        <div id="Page_3" class="page" :class="{ 'visible': currentPage === 'Page_3' }">
             <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-6 shadow-lg text-center">
                 <h2 class="text-2xl font-bold text-teal-400 mb-4">A3 Page</h2>
                 <p class="text-gray-300">這裡是 A3 頁面內容。</p>
@@ -174,8 +174,8 @@
             </div>
         </div>
 
-        <!-- Page A4: User Input -->
-        <div id="A4_Page" class="page" :class="{ 'visible': currentPage === 'A4_Page' }">
+        <!-- Page 4: User Input -->
+        <div id="Page_4" class="page" :class="{ 'visible': currentPage === 'Page_4' }">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                 <div class="flex gap-2 flex-wrap">
                     <button @click="goToPrevPage()" class="bg-slate-600 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-full text-sm transition">
@@ -231,8 +231,8 @@
             </div>
         </div>
 
-        <!-- Page A5: Meditation -->
-        <div id="A5_Page" class="page" :class="{ 'visible': currentPage === 'A5_Page' }">
+        <!-- Page 5: Meditation -->
+        <div id="Page_5" class="page" :class="{ 'visible': currentPage === 'Page_5' }">
             <div class="bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-4 h-[60vh] sm:h-[55vh] md:h-[50vh]" style="background-image: url('images/img_meditation.jpg');">
                 <div class="bg-black/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl w-full max-w-3xl text-center">
                     <p class="text-2xl md:text-3xl font-extrabold text-yellow-300 mb-6 tracking-wider drop-shadow-lg">請專心冥想您的問題</p>
@@ -351,7 +351,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- 原隨機按鈕區塊已移至標題區域 -->
             </div>
             
             <div v-if="isSubmitted" class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl shadow-lg overflow-hidden">
@@ -439,7 +438,7 @@
                     <!-- List View -->
                     <div v-if="areaSelectorView === 'list'" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
                         <button v-for="area in selectorAreas" :key="area.value" @click="selectArea(area)"
-                            class="p-3 rounded-lg font-bold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-200 transform hover:scale-110">
+                            class="p-3 rounded-lg font-bold text-white bg-amber-600 hover:bg-amber-700 transition-all duration-200 transform hover:scale-110'">
                             {{ area.text }}
                         </button>
                     </div>
@@ -573,28 +572,19 @@
                     currentPage.value = pageId;
                 };
 
-                const navigationMap = {
-                    'Index_Page': { next: 'A0_Page', prev: null },
-                    'A0_Page': { next: 'A1_Page', prev: 'Index_Page' },
-                    'A1_Page': { next: 'A2_Page', prev: 'A0_Page' },
-                    'A2_Page': { next: 'A3_Page', prev: 'A1_Page' },
-                    'A3_Page': { next: 'A4_Page', prev: 'A2_Page' },
-                    'A4_Page': { next: 'A5_Page', prev: 'A3_Page' },
-                    'A5_Page': { next: 'End_Page', prev: 'A4_Page' },
-                    'End_Page': { next: null,      prev: null }
-                };
+                const allPages = ref([]); // 用於存放動態掃描到的頁面ID
 
                 const goToNextPage = () => {
-                    const nextPage = navigationMap[currentPage.value]?.next;
-                    if (nextPage) {
-                        navigateToPage(nextPage);
+                    const currentIndex = allPages.value.indexOf(currentPage.value);
+                    if (currentIndex !== -1 && currentIndex < allPages.value.length - 1) {
+                        navigateToPage(allPages.value[currentIndex + 1]);
                     }
                 };
 
                 const goToPrevPage = () => {
-                    const prevPage = navigationMap[currentPage.value]?.prev;
-                    if (prevPage) {
-                        navigateToPage(prevPage);
+                    const currentIndex = allPages.value.indexOf(currentPage.value);
+                    if (currentIndex > 0) {
+                        navigateToPage(allPages.value[currentIndex - 1]);
                     }
                 };
 
@@ -608,7 +598,7 @@
                 const submitQuestion = () => {
                     if (gender.value && cus_name.value && subject.value && questionContent.value) {
                         isSubmitted.value = true;
-                        navigateToPage('A5_Page');
+                        navigateToPage('Page_5');
                     } else {
                         alert('請填寫所有問題相關資訊！');
                     }
@@ -1145,6 +1135,13 @@
 
                 // Lifecycle hooks
                 onMounted(() => {
+                    // --- 動態頁面掃描 ---
+                    // 系統啟動時，會自動掃描 HTML 中所有 class="page" 的 div
+                    // 並根據它們在檔案中的順序來決定頁面流程。
+                    // 若要新增、刪除或調整頁面順序，直接修改上方的 HTML 即可。
+                    const pageElements = document.querySelectorAll('.page');
+                    allPages.value = Array.from(pageElements).map(el => el.id);
+
                     updateTime();
                     timeUpdater = setInterval(updateTime, 1000);
                 });
