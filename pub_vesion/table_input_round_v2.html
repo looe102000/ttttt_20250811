@@ -226,13 +226,32 @@
 
         <!-- Page A5: Meditation -->
         <div id="A5_Page" class="page" :class="{ 'visible': currentPage === 'A5_Page' }">
-            <div class="text-center">
-                <div class="h-[60vh] sm:h-[55vh] md:h-[50vh] bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-4" style="background-image: url('images/img_meditation.jpg');">
-                    <div class="bg-black/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl w-full max-w-3xl text-left">
-                        <h3 class="text-2xl md:text-3xl font-extrabold text-amber-100 mb-3 text-center drop-shadow-md">請專心冥想您的問題</h3>
-                        <p class="text-sm text-sky-200 text-center mb-2">{{ subject || '未設定' }}</p>
-                        <div class="max-h-[28vh] overflow-auto text-amber-200 font-medium whitespace-pre-line break-words text-base md:text-lg p-3 bg-black/30 rounded">
-                            {{ questionContent || '（尚未輸入問題）' }}
+            <div class="bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-4 h-[60vh] sm:h-[55vh] md:h-[50vh]" style="background-image: url('images/img_meditation.jpg');">
+                <div class="bg-black/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl w-full max-w-3xl text-center">
+                    <h3 class="text-3xl md:text-4xl font-extrabold text-yellow-300 mb-6 tracking-wider drop-shadow-lg">請專心冥想您的問題</h3>
+                    
+                    <div class="bg-slate-900/70 border border-slate-700 rounded-xl shadow-inner text-left p-6">
+                        <!-- Subject -->
+                        <div class="flex items-center gap-3">
+                            <div class="flex-shrink-0 w-12 h-12 bg-sky-800/50 rounded-full flex items-center justify-center border-2 border-sky-600">
+                                <i :class="subjectIcon" class="text-2xl text-sky-300"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-sky-400">提問主題</p>
+                                <p class="text-xl font-semibold text-gray-100">{{ subject || '未設定主題' }}</p>
+                            </div>
+                        </div>
+                        
+                        <hr class="border-slate-600/80 my-4">
+                        
+                        <!-- Question -->
+                        <div>
+                            <p class="text-sm font-bold text-amber-400 mb-2">您的問題</p>
+                            <div class="max-h-[25vh] overflow-auto pr-2">
+                                <p class="text-gray-200 font-light leading-relaxed whitespace-pre-line break-words text-base md:text-lg">
+                                    {{ questionContent || '（尚未輸入問題）' }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -250,26 +269,6 @@
         <!-- Page A6: Card Drawing -->
         <div id="End_Page" class="page" :class="{ 'visible': currentPage === 'End_Page' }">
             <div class="flex flex-wrap items-center mb-6 gap-4">
-                <!-- 隨機選取按鈕 - 正常狀態 -->
-                <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
-                    <i class="fas fa-magic mr-2"></i> 隨機選取
-                </button>
-                <!-- 隨機選取按鈕 - 進行中狀態 -->
-                <button v-if="showRandomButton && isRandomSelecting" disabled
-                    class="bg-purple-400 text-white font-bold py-2 px-6 rounded-full opacity-50 cursor-not-allowed">
-                    <i class="fas fa-spinner fa-spin mr-2"></i> 選取中...
-                </button>
-                <!-- 隨機選取按鈕 - 完成狀態 -->
-                <button v-if="showRandomButton && randomSelectCompleted" disabled
-                    class="bg-green-500 text-white font-bold py-2 px-6 rounded-full opacity-70 cursor-not-allowed">
-                    <i class="fas fa-check mr-2"></i> 隨機抽取完成
-                </button>
-                <!-- 手動選取後的提示 -->
-                <div v-if="showRandomButton && hasManualSelection && !allRoundsCompleted" 
-                    class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full opacity-70">
-                    <i class="fas fa-hand-paper mr-2"></i> 已開始手動選取
-                </div>
                 <!-- 操作說明區塊 -->
                 <div class="bg-slate-900/80 text-sm text-cyan-200 px-4 py-2 rounded-lg border border-slate-700 w-full md:max-w-[500px] md:self-stretch md:ml-auto">
                     <span class="font-bold text-sky-400">操作說明：</span>
@@ -281,26 +280,65 @@
                 </div>
                 <!-- 提問顯示區塊-->
                 <div v-if="questionContent" class="mt-6 w-full flex-1 min-w-0">
-                    <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl p-4 shadow-lg w-full">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center text-cyan-300">
-                                <i class="fas fa-comment-dots mr-3 text-lg"></i>
+                    <div class="bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl shadow-lg w-full overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-start justify-between">
                                 <div>
-                                    <div class="font-bold text-sky-300">本次提問</div>
-                                    <div class="text-xs text-gray-400 mt-0.5">
-                                        來自: <span class="font-medium text-gray-200">{{ cus_name || '訪客' }}</span>
-                                        <span class="mx-2">·</span>
-                                        主題: <span class="font-medium text-gray-200">{{ subject || '未設定' }}</span>
+                                    <div class="font-bold text-sky-300 text-lg mb-2">本次提問</div>
+                                    <div class="text-xs text-gray-400 flex items-center gap-x-4">
+                                        <span class="inline-flex items-center">
+                                            <i class="fas fa-user fa-fw mr-1.5 text-cyan-400"></i>
+                                            來自: <span class="font-medium text-gray-200 ml-1">{{ cus_name || '訪客' }}</span>
+                                        </span>
+                                        <span class="inline-flex items-center">
+                                            <i :class="subjectIcon" class="fa-fw mr-1.5 text-cyan-400"></i>
+                                            主題: <span class="font-medium text-gray-200 ml-1">{{ subject || '未設定' }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-400 self-start flex-shrink-0 ml-4">
+                                    <div class="font-mono text-amber-300 text-[11px] bg-slate-900/80 py-1 px-3 rounded-full border border-slate-700 cursor-pointer select-none"
+                                        @mousedown="startLongPress"
+                                        @mouseup="endLongPress"
+                                        @mouseleave="endLongPress"
+                                        @touchstart="startLongPress"
+                                        @touchend="endLongPress"
+                                        @touchcancel="endLongPress"
+                                        :class="{ 'bg-cyan-600/80 scale-95 ring-2 ring-cyan-400': isLongPressing }">
+                                        {{ currentTime }}
                                     </div>
                                 </div>
                             </div>
-                            <div class="text-xs text-gray-400 self-start">
-                                <span class="font-mono text-amber-300 text-[11px]">{{ currentTime }}</span>
-                            </div>
                         </div>
-
-                        <div class="bg-slate-900/50 rounded-md p-3 text-gray-200 whitespace-pre-line leading-relaxed break-words text-base md:text-lg">
-                            {{ questionContent }}
+                        <div class="bg-slate-900/50 px-4 py-3 border-t border-slate-700/50">
+                             <p class="max-h-[25vh] overflow-auto text-amber-100 font-light leading-relaxed whitespace-pre-line break-words text-base md:text-lg pr-2">
+                                {{ questionContent }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- 隨機按鈕放在獨立一行 -->
+                <div class="w-full mb-2">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <!-- 隨機選取按鈕 - 正常狀態 -->
+                        <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105">
+                            <i class="fas fa-magic mr-2"></i> 隨機選取
+                        </button>
+                        <!-- 隨機選取按鈕 - 進行中狀態 -->
+                        <button v-if="showRandomButton && isRandomSelecting" disabled
+                            class="bg-purple-400 text-white font-bold py-2 px-6 rounded-full opacity-50 cursor-not-allowed">
+                            <i class="fas fa-spinner fa-spin mr-2"></i> 選取中...
+                        </button>
+                        <!-- 隨機選取按鈕 - 完成狀態 -->
+                        <button v-if="showRandomButton && randomSelectCompleted" disabled
+                            class="bg-green-500 text-white font-bold py-2 px-6 rounded-full opacity-70 cursor-not-allowed">
+                            <i class="fas fa-check mr-2"></i> 隨機抽取完成
+                        </button>
+                        <!-- 手動選取後的提示 -->
+                        <div v-if="showRandomButton && hasManualSelection && !allRoundsCompleted" 
+                            class="bg-orange-500 text-white font-bold py-2 px-6 rounded-full opacity-70">
+                            <i class="fas fa-hand-paper mr-2"></i> 已開始手動選取
                         </div>
                     </div>
                 </div>
@@ -777,28 +815,39 @@
                 const showRandomButton = ref(false); // 控制隨機按鈕顯示
                 const hasManualSelection = ref(false); // 追蹤是否有手動選擇
                 
-                // 長按功能 (按壓兩秒)
+                // 長按功能 (按壓三秒啟用/停用隨機按鈕)，若任一回合已有選定則禁止啟用
                 const isLongPressing = ref(false);
                 const longPressTimer = ref(null);
                 const longPressDuration = 2000; // 2秒
-                
+
                 const startLongPress = () => {
                     isLongPressing.value = true;
                     longPressTimer.value = setTimeout(() => {
+                        // 如果要啟用隨機按鈕，先檢查是否已有回合被選定（卡片或區域）
+                        const anySelected = rows.value.some(r => r.card || r.box);
+                        if (!showRandomButton.value && anySelected) {
+                            // 嘗試啟用但已有選定，顯示提示並中止
+                            alert('已選定回合，無法啟用隨機選取功能');
+                            isLongPressing.value = false;
+                            longPressTimer.value = null;
+                            return;
+                        }
+
                         // 切換隨機按鈕顯示狀態
                         showRandomButton.value = !showRandomButton.value;
-                        
+
                         // 給用戶反饋
                         if (showRandomButton.value) {
                             alert('隨機選取功能已啟用');
                         } else {
-                            alert('隨機選取功能已關閉');
+                            alert('隨機選取功能已停用');
                         }
-                        
+
                         isLongPressing.value = false;
+                        longPressTimer.value = null;
                     }, longPressDuration);
                 };
-                
+
                 const endLongPress = () => {
                     if (longPressTimer.value) {
                         clearTimeout(longPressTimer.value);
@@ -1066,6 +1115,16 @@
                     }
                 };
 
+                const subjectIcon = computed(() => {
+                    switch (subject.value) {
+                        case '工作': return 'fas fa-briefcase';
+                        case '感情': return 'fas fa-heart';
+                        case '財運': return 'fas fa-coins';
+                        case '其他': return 'fas fa-star';
+                        default: return 'fas fa-question-circle';
+                    }
+                });
+
                 // Lifecycle hooks
                 onMounted(() => {
                     updateTime();
@@ -1085,6 +1144,7 @@
                     results, formattedResults,
                     base64Output, copyToClipboard, randomSelect, isRandomSelecting, randomSelectCompleted,
                     showRandomButton, startLongPress, endLongPress, isLongPressing, hasManualSelection,
+                    subjectIcon,
                     // Modals
                     showNumberSelector, showAreaSelector, showDirectionsModal, showCardsModal, showLinksModal, showResultModal,
                     closeAllModals,
