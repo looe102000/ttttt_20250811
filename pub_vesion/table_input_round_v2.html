@@ -888,14 +888,6 @@
                     const maxNumber = getMaxNumber(row.currentRound);
                     selectorNumbers.value = Array.from({ length: maxNumber }, (_, i) => i + 1);
                     showNumberSelector.value = true;
-                    
-                    // 滾動到 modal 位置
-                    setTimeout(() => {
-                        const modal = document.querySelector('.fixed.inset-0');
-                        if (modal) {
-                            modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }, 100);
                 };
                 const closeNumberSelector = () => showNumberSelector.value = false;
                 const selectNumber = (num) => {
@@ -903,6 +895,10 @@
                         rows.value[currentSelectorIndex.value].card = num.toString();
                         hasManualSelection.value = true; // 標記為手動選擇
                         closeNumberSelector();
+                        // 自動滾動到頁面底部
+                        setTimeout(() => {
+                            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }, 100);
                     }
                 };
 
@@ -916,14 +912,6 @@
                     currentAreaSelectorRound.value = row.currentRound;
                     selectorAreas.value = getOptions(row.currentRound);
                     showAreaSelector.value = true;
-                    
-                    // 滾動到 modal 位置
-                    setTimeout(() => {
-                        const modal = document.querySelector('.fixed.inset-0');
-                        if (modal) {
-                            modal.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
-                    }, 100);
                 };
                 const closeAreaSelector = () => showAreaSelector.value = false;
                 const selectArea = (area) => {
@@ -931,6 +919,10 @@
                         rows.value[currentAreaSelectorIndex.value].box = area.value;
                         hasManualSelection.value = true; // 標記為手動選擇
                         closeAreaSelector();
+                        // 自動滾動到頁面底部
+                        setTimeout(() => {
+                            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        }, 100);
                     }
                 };
 
