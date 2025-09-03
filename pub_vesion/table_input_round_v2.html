@@ -235,7 +235,7 @@
         <div id="A5_Page" class="page" :class="{ 'visible': currentPage === 'A5_Page' }">
             <div class="bg-cover bg-center rounded-xl shadow-2xl flex flex-col justify-center items-center p-4 h-[60vh] sm:h-[55vh] md:h-[50vh]" style="background-image: url('images/img_meditation.jpg');">
                 <div class="bg-black/50 backdrop-blur-sm p-6 sm:p-8 rounded-xl w-full max-w-3xl text-center">
-                    <h3 class="text-3xl md:text-2xl font-extrabold text-yellow-300 mb-6 tracking-wider drop-shadow-lg">請專心冥想您的問題</h3>
+                    <h3 class="text-xl md:text-3xl font-extrabold text-yellow-300 mb-6 tracking-wider drop-shadow-lg">請專心冥想您的問題</h3>
                     <p class="text-gray-300">深呼吸，放鬆心情，專注於您想要詢問的事物。</p>
                     <div class="bg-slate-900/70 border border-slate-700 rounded-xl shadow-inner text-left p-6">
                         <!-- Subject -->
@@ -304,7 +304,7 @@
                                     </div>
                                     
                                     <!-- 隨機選取按鈕以本次提問為基準向右偏移（橫排浮動設計） -->
-                                    <div class="absolute -top-2 left-18 text-xs z-20">
+                                    <div class="absolute -top-2 left-16 text-xs z-20">
                                         <!-- 隨機選取按鈕 - 正常狀態 -->
                                         <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
                                             class="bg-purple-600/90 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105 text-xs backdrop-blur-sm border border-purple-500/50 whitespace-nowrap">
