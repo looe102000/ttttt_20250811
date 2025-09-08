@@ -85,123 +85,110 @@
                 <div class="w-full max-w-3xl mx-auto p-2 md:p-4 rounded-lg" style="background-color: #2c3e50;">
                     <div class="grid grid-cols-4 grid-rows-4 gap-2 md:gap-4 text-white text-center">
                         
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">巳</span>
                             <div v-if="gridCards['巳']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['巳']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['巳']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">午</span>
                             <div v-if="gridCards['午']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['午']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['午']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">未</span>
                             <div v-if="gridCards['未']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['未']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['未']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">申</span>
                             <div v-if="gridCards['申']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['申']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['申']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">辰</span>
                             <div v-if="gridCards['辰']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['辰']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['辰']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-span-2 row-span-2 rounded-lg flex flex-col justify-center items-center text-xl md:text-2xl font-bold p-2" style="background-color: #34495e;">
+                        <div class="col-span-2 row-span-2 rounded-lg flex flex-col justify-center items-center text-xl md:text-2xl font-bold p-2 border-2 border-gray-400" style="background-color: #34495e;">
                             <span>中心區域</span>
                             <div v-if="gridCards['中間']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['中間']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['中間']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">酉</span>
                             <div v-if="gridCards['酉']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['酉']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['酉']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">卯</span>
                             <div v-if="gridCards['卯']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['卯']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['卯']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">戌</span>
                             <div v-if="gridCards['戌']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['戌']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['戌']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">寅</span>
                             <div v-if="gridCards['寅']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['寅']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['寅']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">丑</span>
                             <div v-if="gridCards['丑']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['丑']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['丑']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">子</span>
                             <div v-if="gridCards['子']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['子']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['子']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem]">
+                        <div class="bg-orange-500 rounded-lg p-1 md:p-2 flex flex-col justify-start items-center h-auto min-h-[6rem] md:min-h-[7rem] border-2 border-gray-400">
                             <span class="text-xl md:text-2xl font-bold">亥</span>
                             <div v-if="gridCards['亥']" class="mt-1 text-xs md:text-sm w-full">
-                                <div v-for="card in gridCards['亥']" :key="card.key" class="mb-1 border-b border-white/20 last:border-b-0 pb-1">
-                                    <div class="font-semibold">{{ card.front }}</div>
-                                    <div class="opacity-80">{{ card.back }}</div>
+                                <div v-for="card in gridCards['亥']" :key="card.key" class="mb-1">
+                                    <div class="font-semibold">{{ card.globalIndex }}. {{ card.front }}</div>
                                 </div>
                             </div>
                         </div>
@@ -312,9 +299,9 @@
                     return output || null;
                 }
 
-                                                                                const gridCards = computed(() => {
+                                                                                                const orderedCards = computed(() => {
                     const val = inputText.value.trim();
-                    if (!val) return {};
+                    if (!val) return [];
 
                     let obj;
                     try {
@@ -324,16 +311,16 @@
                             const decoded = atob(val);
                             obj = JSON.parse(decoded);
                         } else {
-                            return {};
+                            return [];
                         }
                     } catch {
-                        return {};
+                        return [];
                     }
 
-                    if (!obj.result) return {};
+                    if (!obj.result) return [];
 
                     const [ver, ...rest] = obj.result.split(';');
-                    const cards = {};
+                    const allCards = [];
                     const locationMap = { '1': '巳', '2': '午', '3': '未', '4': '申', '5': '辰', '6': '酉', '7': '卯', '8': '戌', '9': '寅', '10': '丑', '11': '子', '12': '亥', 'center': '中間' };
 
                     if (rest.length > 0) {
@@ -347,21 +334,34 @@
                             for (const round of round_data.rounds) {
                                 const text = round.texts.find(t => t.key === cardKey);
                                 if (text) {
-                                    found = text;
+                                    found = { ...text }; // Create a copy
                                     break;
                                 }
                             }
 
                             let locationName = locationMap[locationKey];
                             if (locationName && found) {
-                                if (!cards[locationName]) {
-                                    cards[locationName] = [];
-                                }
-                                cards[locationName].push(found);
+                                found.location = locationName;
+                                allCards.push(found);
                             }
                         }
                     }
-                    return cards;
+                    return allCards;
+                });
+
+                const gridCards = computed(() => {
+                    const grid = {};
+                    orderedCards.value.forEach((card, index) => {
+                        const location = card.location;
+                        if (!grid[location]) {
+                            grid[location] = [];
+                        }
+                        grid[location].push({
+                            ...card,
+                            globalIndex: index + 1
+                        });
+                    });
+                    return grid;
                 });
 
                 const outputText = computed(() => {
