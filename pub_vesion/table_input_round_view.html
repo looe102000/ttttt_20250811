@@ -47,7 +47,7 @@
                         v-model="inputText"
                         rows="12" 
                         class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm resize-y mb-6 text-base" 
-                        placeholder="請貼入 JSON 或 Base64 字串...">
+                        placeholder="請貼入 JSON、Base64 字串或中文格式內容...">
                     </textarea>
                 </div>
                 
@@ -77,14 +77,13 @@
                         </button>
                     </div>
                     <textarea 
-                        id="outputArea" 
-                        :value="outputText"
+                        id="outputArea"
+                        v-model="outputText"
                         rows="12" 
-                        class="w-full p-4 border border-dashed border-gray-400 rounded-lg bg-gray-50/50 resize-y mb-6 text-base" 
-                        readonly>
+                        readonly
+                        class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm resize-y mb-6 text-base bg-gray-50" 
+                        placeholder="顯示解析後的內容...">
                     </textarea>
-                    
-                    
                 </div>
             </div>
 
@@ -231,11 +230,10 @@
     </div>
 
     <script>
-        const { createApp, ref, computed } = Vue;
+        const { createApp, ref, computed, watch, nextTick } = Vue;
 
         createApp({
             setup() {
-                const inputText = ref('');
                 const copyButtonText = ref('複製內容');
                 const copyIcon = ref('copy'); // 'copy', 'check', 'fail'
 
@@ -247,9 +245,6 @@
                     }
                 });
 
-                // =================================================
-                // 以下為核心邏輯，完全不作更動
-                // =================================================
                 const round_data = {
                     ver: "1.0",
                     rounds: [
@@ -260,150 +255,204 @@
                     ]
                 };
 
-                function decode(str) { try { return decodeURIComponent(str); } catch { return str; } }
+                // --- Conversion Helpers ---
+                const cardNameToKey = {};
+                const cardKeyToCard = {};
+                round_data.rounds.forEach(round => {
+                    round.texts.forEach(text => {
+                        cardNameToKey[text.front] = text.key;
+                        cardKeyToCard[text.key] = { ...text, round: round.round };
+                    });
+                });
+                const locationNameToKey = { '巳': '1', '午': '2', '未': '3', '申': '4', '辰': '5', '酉': '6', '卯': '7', '戌': '8', '寅': '9', '丑': '10', '子': '11', '亥': '12', '中間': 'center' };
+                const locationKeyToName = Object.fromEntries(Object.entries(locationNameToKey).map(a => a.reverse()));
 
-                function parseResult(resultStr) {
-                    let [ver, ...rest] = resultStr.split(';');
-                    let rounds = [];
-                    const locationMap = { '1': '巳', '2': '午', '3': '未', '4': '申', '5': '辰', '6': '酉', '7': '卯', '8': '戌', '9': '寅', '10': '丑', '11': '子', '12': '亥', 'center': '中間' };
-                    if (rest.length > 0) {
-                        let arr = rest.join(';').split('-');
-                        for (let i = 0; i < arr.length; i += 2) {
-                            let location = arr[i];
-                            let key = arr[i + 1] || '';
-                            let found = null;
-                            let roundName = '';
-                            for (const round of round_data.rounds) {
-                                const text = round.texts.find(t => t.key === key);
-                                if (text) {
-                                    found = text;
-                                    roundName = round.round;
-                                    break;
+                function decode(str) { try { return decodeURIComponent(str || ''); } catch { return str || ''; } }
+                function isBase64(str) { return /^[A-Za-z0-9+\/=]+$/.test(str) && str.length % 4 === 0; }
+
+                // --- Parsers and Formatters ---
+
+                // Parses Chinese text into a structured object
+                function parseChineseFormat(text) {
+                    const obj = {
+                        cus_info: { divination_time: '', gender: '', cus_name: '', subject: '', content: '' },
+                        result: ''
+                    };
+                    if (!text) return obj;
+
+                    const lines = text.split('\n');
+                    let isParsingContent = false;
+                    let isParsingCards = false;
+                    const cardResults = [];
+
+                    for (const line of lines) {
+                        if (line.startsWith('時間：')) obj.cus_info.divination_time = line.substring(3).trim();
+                        else if (line.startsWith('類型：')) obj.cus_info.subject = line.substring(3).trim();
+                        else if (line.startsWith('性別：')) obj.cus_info.gender = line.substring(3).trim();
+                        else if (line.startsWith('姓名：')) obj.cus_info.cus_name = line.substring(3).trim();
+                        else if (line.startsWith('題目：')) obj.cus_info.subject = line.substring(3).trim();
+                        else if (line.startsWith('問題概述:')) {
+                            isParsingContent = true;
+                            isParsingCards = false;
+                            obj.cus_info.content = '';
+                        } else if (line.startsWith('抽牌呈現:')) {
+                            isParsingContent = false;
+                            isParsingCards = true;
+                        } else if (isParsingContent) {
+                            obj.cus_info.content += (obj.cus_info.content ? '\n' : '') + line;
+                        } else if (isParsingCards) {
+                            const match = line.match(/^\d+\.\s*(.+)在(.+)$/);
+                            if (match) {
+                                const cardFront = match[1].trim();
+                                const locationName = match[2].trim();
+                                const cardKey = cardNameToKey[cardFront];
+                                const locationKey = locationNameToKey[locationName];
+                                if (cardKey && locationKey) {
+                                    cardResults.push(`${locationKey}-${cardKey}`);
                                 }
-                            }
-                            let locationName = locationMap[location] || location;
-                            if (found) {
-                                rounds.push(`${location}-${key}: ${found.front} (${found.back}, 回合:${roundName}, 區域:${locationName})`);
-                            } else {
-                                rounds.push(`${location}-${key}: 未知 (區域:${locationName})`);
                             }
                         }
                     }
-                    return { ver, rounds };
+                    obj.cus_info.content = obj.cus_info.content.trim();
+                    if (cardResults.length > 0) {
+                        obj.result = `1.0;${cardResults.join('-')}`;
+                    }
+                    return obj;
                 }
 
-                function convertToCustomFormat(parsedRounds) {
-                    return parsedRounds.map((r, idx) => {
-                        const match = r.match(/^(\w+)-(\w+): ([^ ]+) \([^,]+, 回合:[^,]+, 區域:([^\)]+)\)/);
-                        if (match) {
-                            return `${idx + 1}. ${match[3]}在${match[4]}`;
-                        } else {
-                            return `${idx + 1}. ${r}`;
-                        }
-                    }).join('\n');
-                }
-
-                function isBase64(str) {
-                    return /^[A-Za-z0-9+\/=]+$/.test(str) && str.length % 4 === 0;
-                }
-
+                // Builds Chinese text from a structured object
                 function buildOutput(obj) {
                     let output = '';
                     if (obj && obj.cus_info) {
-                        const gender = decode(obj.cus_info.gender ?? '');
-                        const cusName = decode(obj.cus_info.cus_name ?? '');
-                        const subject = decode(obj.cus_info.subject ?? '');
-                        const content = decode(obj.cus_info.content ?? '');
-                        const divinationTime = decode(obj.cus_info.divination_time ?? '');
-                        output += `時間：${divinationTime}\n`;
-                        output += `類型：${subject}\n`;
-                        output += `性別：${gender}\n`;
-                        output += `姓名：${cusName}\n`;
-                        output += `題目：${subject}\n\n`;
-                        output += `問題概述:\n${content}\n\n`;
+                        const { divination_time, subject, gender, cus_name, content } = obj.cus_info;
+                        output += `時間：${decode(divination_time)}
+`;
+                        output += `類型：${decode(subject)}
+`;
+                        output += `性別：${decode(gender)}
+`;
+                        output += `姓名：${decode(cus_name)}
+`;
+                        output += `題目：${decode(subject)}
+
+`;
+                        output += `問題概述:
+${decode(content)}
+
+`;
                     }
                     if (obj && obj.result) {
-                        const result = parseResult(obj.result);
-                        const body = convertToCustomFormat(result.rounds);
-                        output += `抽牌呈現:\n\n${body}`;
+                        const [ver, ...rest] = obj.result.split(';');
+                        const cards = [];
+                        if (rest.length > 0) {
+                            const arr = rest.join(';').split('-');
+                            for (let i = 0; i < arr.length; i += 2) {
+                                const location = arr[i];
+                                const key = arr[i + 1] || '';
+                                const card = cardKeyToCard[key];
+                                const locationName = locationKeyToName[location];
+                                if (card && locationName) {
+                                    cards.push(`${cards.length + 1}. ${card.front}在${locationName}`);
+                                }
+                            }
+                        }
+                        output += `抽牌呈現:
+${cards.join('\n')}`;
                     }
-                    return output || null;
+                    return output.trim() || null;
                 }
 
-                const customerInfo = computed(() => {
-                    const val = inputText.value.trim();
-                    if (!val) return null;
+                // --- Central Data Model ---
+                const divinationData = ref({ cus_info: {}, result: '' });
 
-                    let obj;
-                    try {
-                        if (val.startsWith('{')) {
-                            obj = JSON.parse(val);
-                        } else if (isBase64(val)) {
-                            const decoded = atob(val);
-                            obj = JSON.parse(decoded);
-                        } else {
-                            return null;
+                // --- Separate input and display states ---
+                const rawInputText = ref('');
+                
+                // --- Writable Computed Properties for 2-way data binding ---
+                const inputText = computed({
+                    get() {
+                        return rawInputText.value;
+                    },
+                    set(newValue) {
+                        rawInputText.value = newValue;
+                        // Parse different formats and update divinationData
+                        if (!newValue) {
+                            divinationData.value = { cus_info: {}, result: '' };
+                            return;
                         }
-                    } catch {
-                        return null;
+                        
+                        let obj;
+                        try {
+                            if (newValue.startsWith('{')) {
+                                // JSON format
+                                obj = JSON.parse(newValue);
+                                divinationData.value = obj;
+                            } else if (isBase64(newValue)) {
+                                // Base64 format
+                                obj = JSON.parse(atob(newValue));
+                                divinationData.value = obj;
+                            } else if (newValue.includes('時間：') || newValue.includes('抽牌呈現:')) {
+                                // Chinese format
+                                const parsed = parseChineseFormat(newValue);
+                                const new_cus_info = {};
+                                for (const key in parsed.cus_info) {
+                                    new_cus_info[key] = encodeURIComponent(parsed.cus_info[key]);
+                                }
+                                divinationData.value = { cus_info: new_cus_info, result: parsed.result };
+                            }
+                            // If it's neither JSON, base64, nor Chinese format, don't update divinationData
+                        } catch { 
+                            // If parsing fails, don't update divinationData
+                        }
                     }
+                });
 
-                    if (obj && obj.cus_info) {
+                const outputText = computed({
+                    get() {
+                        // If no input, return empty string
+                        if (!rawInputText.value) {
+                            return '';
+                        }
+                        // If input is Chinese format, display the input as-is
+                        if (rawInputText.value.includes('時間：') || rawInputText.value.includes('抽牌呈現:')) {
+                            return rawInputText.value;
+                        }
+                        // Otherwise, build output from divinationData
+                        return buildOutput(divinationData.value) || '';
+                    }
+                    // Removed setter since output is now readonly
+                });
+
+                // --- Computed Properties for Display ---
+                const customerInfo = computed(() => {
+                    const info = divinationData.value.cus_info;
+                    if (info && Object.values(info).some(v => v)) {
                         return {
-                            gender: decode(obj.cus_info.gender ?? ''),
-                            cus_name: decode(obj.cus_info.cus_name ?? ''),
-                            subject: decode(obj.cus_info.subject ?? ''),
-                            content: decode(obj.cus_info.content ?? ''),
-                            divination_time: decode(obj.cus_info.divination_time ?? '')
+                            gender: decode(info.gender),
+                            cus_name: decode(info.cus_name),
+                            subject: decode(info.subject),
+                            content: decode(info.content),
+                            divination_time: decode(info.divination_time)
                         };
                     }
                     return null;
                 });
 
                 const orderedCards = computed(() => {
-                    const val = inputText.value.trim();
-                    if (!val) return [];
-
-                    let obj;
-                    try {
-                        if (val.startsWith('{')) {
-                            obj = JSON.parse(val);
-                        } else if (isBase64(val)) {
-                            const decoded = atob(val);
-                            obj = JSON.parse(decoded);
-                        } else {
-                            return [];
-                        }
-                    } catch {
-                        return [];
-                    }
-
-                    if (!obj.result) return [];
-
-                    const [ver, ...rest] = obj.result.split(';');
+                    const resultStr = divinationData.value.result;
+                    if (!resultStr) return [];
+                    const [ver, ...rest] = resultStr.split(';');
                     const allCards = [];
-                    const locationMap = { '1': '巳', '2': '午', '3': '未', '4': '申', '5': '辰', '6': '酉', '7': '卯', '8': '戌', '9': '寅', '10': '丑', '11': '子', '12': '亥', 'center': '中間' };
-
                     if (rest.length > 0) {
                         const arr = rest.join(';').split('-');
                         for (let i = 0; i < arr.length; i += 2) {
                             let locationKey = arr[i];
                             let cardKey = arr[i + 1] || '';
                             if (!cardKey) continue;
-
-                            let found = null;
-                            for (const round of round_data.rounds) {
-                                const text = round.texts.find(t => t.key === cardKey);
-                                if (text) {
-                                    found = { ...text }; // Create a copy
-                                    break;
-                                }
-                            }
-
-                            let locationName = locationMap[locationKey];
-                            if (locationName && found) {
-                                found.location = locationName;
-                                allCards.push(found);
+                            const card = cardKeyToCard[cardKey];
+                            const locationName = locationKeyToName[locationKey];
+                            if (card && locationName) {
+                                allCards.push({ ...card, location: locationName });
                             }
                         }
                     }
@@ -417,45 +466,15 @@
                         if (!grid[location]) {
                             grid[location] = [];
                         }
-                        grid[location].push({
-                            ...card,
-                            globalIndex: index + 1
-                        });
+                        grid[location].push({ ...card, globalIndex: index + 1 });
                     });
                     return grid;
                 });
 
-                const outputText = computed(() => {
-                    const val = inputText.value.trim();
-                    if (!val) return '';
-                    let parsed = '';
-                    if (val.startsWith('{')) {
-                        try {
-                            const obj = JSON.parse(val);
-                            parsed = buildOutput(obj);
-                        } catch {
-                            parsed = 'JSON 解析失敗，請檢查格式。';
-                        }
-                    } else if (isBase64(val)) {
-                        try {
-                            const decoded = atob(val);
-                            const obj = JSON.parse(decoded);
-                            parsed = buildOutput(obj);
-                        } catch {
-                            parsed = 'Base64 解碼或解析失敗，請檢查內容。';
-                        }
-                    } else {
-                        parsed = '無法識別的輸入格式。請提供 JSON 或 Base64。';
-                    }
-                    return parsed || '無法產生內容。';
-                });
-                
-                // =================================================
-                // 以上為核心邏輯，完全不作更動
-                // =================================================
-
+                // --- UI Methods ---
                 const clearInput = () => {
-                    inputText.value = '';
+                    rawInputText.value = '';
+                    divinationData.value = { cus_info: {}, result: '' };
                 };
 
                 const copyToClipboard = async () => {
@@ -465,7 +484,6 @@
                         copyButtonText.value = '已複製!';
                         copyIcon.value = 'check';
                     } catch (err) {
-                        console.error('複製失敗:', err);
                         copyButtonText.value = '複製失敗';
                         copyIcon.value = 'fail';
                     } finally {
@@ -485,7 +503,8 @@
                     copyToClipboard,
                     clearInput,
                     gridCards,
-                    customerInfo
+                    customerInfo,
+                    rawInputText
                 };
             }
         }).mount('#app');
