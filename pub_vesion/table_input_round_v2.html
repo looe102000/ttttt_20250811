@@ -286,13 +286,13 @@
                     </ul>
                 </div>
                 <!-- 提問顯示區塊-->
-                <div v-if="questionContent" class="mt-6 w-full flex-1 min-w-0">
+                <div v-if="questionContent" class="w-full flex-1 min-w-0">
                     <div class="relative bg-slate-800/70 backdrop-blur-sm border border-slate-700 rounded-xl shadow-lg w-full overflow-visible">
                         <div class="p-4 relative">
                             <div class="flex items-start justify-between">
-                                <div class="relative">
+                                <div class="relative flex-1">
                                     <div class="font-bold text-sky-300 text-lg mb-2">本次提問</div>
-                                    <div class="text-xs text-gray-400 flex items-center gap-x-4">
+                                    <div class="text-xs text-gray-400 flex items-center gap-x-4 flex-wrap">
                                         <span class="inline-flex items-center">
                                             <i class="fas fa-user fa-fw mr-1.5 text-cyan-400"></i>
                                             稱呼: <span class="font-medium text-gray-200 ml-1">{{ cus_name || '訪客' }}</span>
@@ -302,9 +302,24 @@
                                             主題: <span class="font-medium text-gray-200 ml-1">{{ subject || '未設定' }}</span>
                                         </span>
                                     </div>
+                                </div>
+                                
+                                <!-- 右側區域包含時間和隨機選取按鈕 -->
+                                <div class="flex flex-col items-end gap-2 text-xs text-gray-400 z-30">
+                                    <!-- 時間位置在右上角 -->
+                                    <div class="font-mono text-amber-300 text-[11px] bg-slate-900/80 py-1 px-3 rounded-full border border-slate-700 cursor-pointer select-none shadow-lg"
+                                        @mousedown="startLongPress"
+                                        @mouseup="endLongPress"
+                                        @mouseleave="endLongPress"
+                                        @touchstart="startLongPress"
+                                        @touchend="endLongPress"
+                                        @touchcancel="endLongPress"
+                                        :class="{ 'bg-cyan-600/80 scale-95 ring-2 ring-cyan-400': isLongPressing }">
+                                        {{ currentTime }}
+                                    </div>
                                     
-                                    <!-- 隨機選取按鈕以本次提問為基準向右偏移（橫排浮動設計） -->
-                                    <div class="absolute -top-0 left-20 text-xs z-20">
+                                    <!-- 隨機選取按鈕移至時間下方、主題右側 -->
+                                    <div class="text-xs">
                                         <!-- 隨機選取按鈕 - 正常狀態 -->
                                         <button v-if="showRandomButton && isSubmitted && !allRoundsCompleted && !isRandomSelecting && !randomSelectCompleted && !hasManualSelection" @click="randomSelect" 
                                             class="bg-purple-600/90 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded-full transition-all duration-300 shadow-lg transform hover:scale-105 text-xs backdrop-blur-sm border border-purple-500/50 whitespace-nowrap">
@@ -325,20 +340,6 @@
                                             class="bg-orange-500/90 text-white font-bold py-1 px-4 rounded-full opacity-70 text-xs backdrop-blur-sm border border-orange-500/50 whitespace-nowrap">
                                             已開始手動選取
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- 時間位置在標題區域右上角（框框內但保持距離） -->
-                                <div class="absolute top-4 right-2 text-xs text-gray-400 z-30">
-                                    <div class="font-mono text-amber-300 text-[11px] bg-slate-900/80 py-1 px-3 rounded-full border border-slate-700 cursor-pointer select-none shadow-lg"
-                                        @mousedown="startLongPress"
-                                        @mouseup="endLongPress"
-                                        @mouseleave="endLongPress"
-                                        @touchstart="startLongPress"
-                                        @touchend="endLongPress"
-                                        @touchcancel="endLongPress"
-                                        :class="{ 'bg-cyan-600/80 scale-95 ring-2 ring-cyan-400': isLongPressing }">
-                                        {{ currentTime }}
                                     </div>
                                 </div>
                             </div>
