@@ -32,15 +32,25 @@
                         <label class="block font-semibold text-gray-600 text-lg" for="inputArea">
                             輸入內容
                         </label>
-                        <button 
-                            @click="clearInput"
-                            class="px-4 py-1 text-sm text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-all flex items-center gap-1">
-                            <!-- Clear Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                            清除
-                        </button>
+                        <div class="flex gap-2">
+                            <button 
+                                @click="showTemplateModal = true"
+                                class="px-4 py-1 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-all flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                範本
+                            </button>
+                            <button 
+                                @click="clearInput"
+                                class="px-4 py-1 text-sm text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-all flex items-center gap-1">
+                                <!-- Clear Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                清除
+                            </button>
+                        </div>
                     </div>
                     <textarea 
                         id="inputArea" 
@@ -226,6 +236,76 @@
             </div>
 
         </div>
+
+    <!-- Template Modal -->
+    <div v-if="showTemplateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm" @click.self="showTemplateModal = false">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col" style="max-height: 90vh;">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center bg-gray-50">
+                <h3 class="text-xl font-bold text-gray-800">輸入格式範本</h3>
+                <button @click="showTemplateModal = false" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-8 flex-1 min-h-0">
+                <!-- Format 1: Chinese Text -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-lg font-semibold text-indigo-600">1. 中文文字格式</h4>
+                        <button @click="copyTemplate('chinese')" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            複製
+                        </button>
+                    </div>
+                    <pre class="bg-gray-800 text-gray-100 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">{{ templates.chinese }}</pre>
+                    <p class="mt-2 text-sm text-gray-500">包含「時間」、「類型」、「性別」、「姓名」、「題目」、「問題概述」及「抽牌呈現」等關鍵字。</p>
+                </div>
+
+                <!-- Format 2: JSON -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-lg font-semibold text-indigo-600">2. JSON 格式</h4>
+                        <button @click="copyTemplate('json')" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            複製
+                        </button>
+                    </div>
+                    <pre class="bg-gray-800 text-gray-100 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">{{ templates.json }}</pre>
+                    <p class="mt-2 text-sm text-gray-500">標準 JSON 物件，包含 cus_info 與 result 欄位。</p>
+                </div>
+
+                <!-- Format 3: Base64 -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-lg font-semibold text-indigo-600">3. Base64 編碼</h4>
+                        <button @click="copyTemplate('base64')" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            複製
+                        </button>
+                    </div>
+                    <div class="bg-gray-800 text-gray-100 p-4 rounded-lg text-sm break-all font-mono">{{ templates.base64 }}</div>
+                    <p class="mt-2 text-sm text-gray-500">上述 JSON 格式經過 Base64 編碼後的字串。</p>
+                </div>
+
+                <!-- Format 4: Simple Cards -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-lg font-semibold text-indigo-600">4. 純卡牌列表</h4>
+                        <button @click="copyTemplate('simpleCards')" class="text-sm text-gray-500 hover:text-indigo-600 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                            複製
+                        </button>
+                    </div>
+                    <pre class="bg-gray-800 text-gray-100 p-4 rounded-lg text-sm overflow-x-auto whitespace-pre-wrap">{{ templates.simpleCards }}</pre>
+                    <p class="mt-2 text-sm text-gray-500">僅包含卡牌位置與名稱，每行一張。</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 bg-gray-50 flex justify-end">
+                <button @click="showTemplateModal = false" class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors">關閉</button>
+            </div>
+        </div>
+    </div>
     </div>
 
     <script>
@@ -233,6 +313,55 @@
 
         createApp({
             setup() {
+                const showTemplateModal = ref(false);
+                const templates = {
+                    chinese: `時間：2025-12-03 10:30:00
+類型：運勢占卜
+性別：女
+姓名：陳小美
+題目：未來三個月工作運勢
+
+問題概述:
+最近公司組織調整，想知道自己的工作是否會受到影響，以及是否有升遷機會。
+
+抽牌呈現:
+1. 紫微在巳
+2. 天機在午
+3. 太陽在未
+4. 武曲在申
+5. 天同在辰
+6. 廉貞在酉
+7. 天府在卯
+8. 太陰在中間`,
+                    json: `{
+  "cus_info": {
+    "divination_time": "2025-12-03 10:30:00",
+    "gender": "女",
+    "cus_name": "陳小美",
+    "subject": "未來三個月工作運勢",
+    "content": "最近公司組織調整，想知道自己的工作是否會受到影響，以及是否有升遷機會。"
+  },
+  "result": "1.0;1-AA-2-AB-3-AC-4-AD-5-AE-6-AF-7-AG-center-AH"
+}`,
+                    base64: `eyJjdXNfaW5mbyI6eyJkaXZpbmF0aW9uX3RpbWUiOiIyMDI1LTEyLTAzIDEwOjMwOjAwIiwiZ2VuZGVyIjoi5aWzIiwiY3VzX25hbWUiOiLpmbPlsI/nvo4iLCJzdWJqZWN0Ijoi5pyq5L6G5LiJ5YCL5pyI5bel5L2c6YGL5YuiIiwiY29udGVudCI6IuacgOi/keWFrOWPuOe1hOe5lOiqv+aVtO+8jOaDs+efpemBk+iHquW3seeahOW3peS9nOaYr+WQpuacg+WPl+WIsOW9semfv++8jOS7peWPiuaYr+WQpuacieWNh+mBt+apn+acg+OAgiJ9LCJyZXN1bHQiOiIxLjA7MS1BQS0yLUFCLTMtQUMtNC1BRC01LUFFLTYtQUYtNy1BRy1jZW50ZXItQUgifQ==`,
+                    simpleCards: `1. 紫微在巳
+2. 天機在午
+3. 太陽在未
+4. 武曲在申
+5. 天同在辰
+6. 廉貞在酉
+7. 天府在卯
+8. 太陰在中間`
+                };
+
+                const copyTemplate = async (type) => {
+                    try {
+                        await navigator.clipboard.writeText(templates[type]);
+                    } catch (err) {
+                        console.error('Failed to copy', err);
+                    }
+                };
+
                 const copyButtonText = ref('複製內容');
                 const copyIcon = ref('copy'); // 'copy', 'check', 'fail'
 
@@ -267,7 +396,26 @@
                 const locationKeyToName = Object.fromEntries(Object.entries(locationNameToKey).map(a => a.reverse()));
 
                 function decode(str) { try { return decodeURIComponent(str || ''); } catch { return str || ''; } }
-                function isBase64(str) { return /^[A-Za-z0-9+\/=]+$/.test(str) && str.length % 4 === 0; }
+                
+                // 修正 base64 字串,自動補齊缺失的等號 (處理 iOS 複製時可能遺失尾部等號的問題)
+                function fixBase64Padding(str) {
+                    if (!str) return str;
+                    // 移除空白字符
+                    str = str.trim();
+                    // 計算需要補齊的等號數量
+                    const paddingNeeded = (4 - (str.length % 4)) % 4;
+                    return str + '='.repeat(paddingNeeded);
+                }
+                
+                function isBase64(str) { 
+                    if (!str) return false;
+                    str = str.trim();
+                    // 檢查是否只包含 base64 有效字符
+                    if (!/^[A-Za-z0-9+\/=]+$/.test(str)) return false;
+                    // 修正後檢查長度是否為 4 的倍數
+                    const fixed = fixBase64Padding(str);
+                    return fixed.length % 4 === 0;
+                }
 
                 // --- Parsers and Formatters ---
 
@@ -283,6 +431,11 @@
                     let isParsingContent = false;
                     let isParsingCards = false;
                     const cardResults = [];
+
+                    // Detect if input is likely just a list of cards (and doesn't have standard headers)
+                    if (!text.includes('時間：') && !text.includes('抽牌呈現:') && /^\s*\d+\.\s*.+在.+/m.test(text)) {
+                        isParsingCards = true;
+                    }
 
                     for (const line of lines) {
                         if (line.startsWith('時間：')) obj.cus_info.divination_time = line.substring(3).trim();
@@ -387,10 +540,22 @@ ${cards.join('\n')}`;
                                 obj = JSON.parse(newValue);
                                 divinationData.value = obj;
                             } else if (isBase64(newValue)) {
-                                // Base64 format
-                                obj = JSON.parse(atob(newValue));
+                                // Base64 format - 自動補齊等號後再解碼
+                                const fixedBase64 = fixBase64Padding(newValue.trim());
+                                // 將補齊後的字串更新回輸入框
+                                if (fixedBase64 !== newValue.trim()) {
+                                    rawInputText.value = fixedBase64;
+                                }
+                                // Use TextDecoder to handle UTF-8 characters correctly
+                                const binaryString = atob(fixedBase64);
+                                const bytes = new Uint8Array(binaryString.length);
+                                for (let i = 0; i < binaryString.length; i++) {
+                                    bytes[i] = binaryString.charCodeAt(i);
+                                }
+                                const decodedString = new TextDecoder().decode(bytes);
+                                obj = JSON.parse(decodedString);
                                 divinationData.value = obj;
-                            } else if (newValue.includes('時間：') || newValue.includes('抽牌呈現:')) {
+                            } else if (newValue.includes('時間：') || newValue.includes('抽牌呈現:') || /^\s*\d+\.\s*.+在.+/m.test(newValue)) {
                                 // Chinese format
                                 const parsed = parseChineseFormat(newValue);
                                 const new_cus_info = {};
@@ -503,7 +668,10 @@ ${cards.join('\n')}`;
                     clearInput,
                     gridCards,
                     customerInfo,
-                    rawInputText
+                    rawInputText,
+                    showTemplateModal,
+                    templates,
+                    copyTemplate
                 };
             }
         }).mount('#app');
