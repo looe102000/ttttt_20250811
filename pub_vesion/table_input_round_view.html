@@ -42,6 +42,14 @@
                                 範本
                             </button>
                             <button 
+                                @click="formatInput"
+                                class="px-4 py-1 text-sm text-white bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-all flex items-center gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h10M4 14h16M4 18h10" />
+                                </svg>
+                                格式化內容
+                            </button>
+                            <button 
                                 @click="clearInput"
                                 class="px-4 py-1 text-sm text-white bg-gray-500 hover:bg-gray-600 rounded-lg transition-all flex items-center gap-1">
                                 <!-- Clear Icon -->
@@ -417,6 +425,50 @@
                     return fixed.length % 4 === 0;
                 }
 
+                const formatInput = () => {
+                    const text = rawInputText.value?.trim();
+                    if (!text) return;
+                    if (text.startsWith('{') || isBase64(text)) return;
+
+                    // 先進行初步換行處理，將單行格式轉為多行格式
+                    let normalized = text.replace(/\r\n?/g, '\n');
+                    
+                    // 在各標頭欄位前加入換行（時間、類型、性別、姓名、題目）
+                    normalized = normalized.replace(/\s*(時間：)/g, '\n$1');
+                    normalized = normalized.replace(/\s*(類型：)/g, '\n$1');
+                    normalized = normalized.replace(/\s*(性別：)/g, '\n$1');
+                    normalized = normalized.replace(/\s*(姓名：)/g, '\n$1');
+                    normalized = normalized.replace(/\s*(題目：)/g, '\n$1');
+                    
+                    // 問題概述: 前面換行，後面也換行以分隔內容
+                    normalized = normalized.replace(/\s*(問題概述:\s*)/g, '\n\n$1\n');
+                    
+                    // 抽牌呈現: 前面換行，後面也換行以分隔內容
+                    normalized = normalized.replace(/\s*(抽牌呈現:\s*)/g, '\n\n$1\n');
+                    
+                    // 在每個編號項目前加入換行 (1. xxx在xxx, 2. xxx在xxx...)
+                    normalized = normalized.replace(/\s+(\d+\.\s+\S+在\S+)/g, '\n$1');
+                    
+                    // 清理多餘的空行和首尾空白
+                    normalized = normalized.replace(/\n{3,}/g, '\n\n').trim();
+
+                    // 用既有解析器轉成結構，再用 buildOutput 一次排版
+                    const parsed = parseChineseFormat(normalized);
+                    const encodedCusInfo = {};
+                    Object.entries(parsed.cus_info || {}).forEach(([k, v]) => {
+                        encodedCusInfo[k] = encodeURIComponent(v || '');
+                    });
+                    const formatted = buildOutput({ cus_info: encodedCusInfo, result: parsed.result });
+
+                    if (formatted) {
+                        inputText.value = formatted;
+                        return;
+                    }
+
+                    // 若無法解析，直接使用已處理過的 normalized 結果
+                    inputText.value = normalized;
+                };
+
                 // --- Parsers and Formatters ---
 
                 // Parses Chinese text into a structured object
@@ -521,6 +573,8 @@ ${cards.join('\n')}`;
                 const rawInputText = ref('');
                 
                 // --- Writable Computed Properties for 2-way data binding ---
+                let isAutoFormatting = false; // 防止自動格式化造成無限循環
+                
                 const inputText = computed({
                     get() {
                         return rawInputText.value;
@@ -556,7 +610,15 @@ ${cards.join('\n')}`;
                                 obj = JSON.parse(decodedString);
                                 divinationData.value = obj;
                             } else if (newValue.includes('時間：') || newValue.includes('抽牌呈現:') || /^\s*\d+\.\s*.+在.+/m.test(newValue)) {
-                                // Chinese format
+                                // Chinese format - 自動格式化
+                                if (!isAutoFormatting) {
+                                    isAutoFormatting = true;
+                                    nextTick(() => {
+                                        formatInput();
+                                        isAutoFormatting = false;
+                                    });
+                                }
+                                // 解析中文格式
                                 const parsed = parseChineseFormat(newValue);
                                 const new_cus_info = {};
                                 for (const key in parsed.cus_info) {
@@ -661,6 +723,7 @@ ${cards.join('\n')}`;
                 return {
                     inputText,
                     outputText,
+                    formatInput,
                     copyButtonText,
                     copyIcon,
                     copyButtonClass,
