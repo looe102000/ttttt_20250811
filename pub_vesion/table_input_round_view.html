@@ -573,7 +573,6 @@ ${cards.join('\n')}`;
                 const rawInputText = ref('');
                 
                 // --- Writable Computed Properties for 2-way data binding ---
-                let isAutoFormatting = false; // 防止自動格式化造成無限循環
                 
                 const inputText = computed({
                     get() {
@@ -610,14 +609,7 @@ ${cards.join('\n')}`;
                                 obj = JSON.parse(decodedString);
                                 divinationData.value = obj;
                             } else if (newValue.includes('時間：') || newValue.includes('抽牌呈現:') || /^\s*\d+\.\s*.+在.+/m.test(newValue)) {
-                                // Chinese format - 自動格式化
-                                if (!isAutoFormatting) {
-                                    isAutoFormatting = true;
-                                    nextTick(() => {
-                                        formatInput();
-                                        isAutoFormatting = false;
-                                    });
-                                }
+                                // Chinese format - 僅解析，不自動格式化
                                 // 解析中文格式
                                 const parsed = parseChineseFormat(newValue);
                                 const new_cus_info = {};
